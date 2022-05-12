@@ -37,7 +37,7 @@ module register_file
 				reg_arr[i] <= 8'd0; // clears the registers
 		else if (enable) begin
 			if (b_wr_enable)
-				reg_arr[b_addr] <= b_data_in; // since the register is able to write it writes d_data_in into the register at address b
+				reg_arr[b_addr] <= b_data_in; // since the register is able to write it writes d_data_in into the register at address b (could be special reg's)
 		end
 	end
 	

@@ -55,11 +55,11 @@ module debounce
 	);
 	
 	
-	always @(posedge clk or negedge resetn) begin // 
+	always @(posedge clk or negedge resetn) begin
 		if (!resetn) begin
 			state <= OFF;
 		end else begin
-			if (enable == 1'b1) begin
+			if (enable) begin
 				case (state)
 					ON:
 						if (done && !sig_i_sync)

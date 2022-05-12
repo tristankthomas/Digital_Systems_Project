@@ -21,12 +21,6 @@ module debounce_tb;
 			clk = !clk;
 		end
 	end
-	
-//	initial begin
-//		#(`NUM_CLKS_TIMEOUT*`PERIOD)
-//		$display("Timeout Occured.\n");
-//		$stop;
-//	end
 
     debounce 
 	 

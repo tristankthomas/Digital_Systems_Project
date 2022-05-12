@@ -17,10 +17,8 @@ module soc
 	output wire dval,					// used as enable for dout (not displayed)
 
 	output wire [3:0] debug,		// connected to left 4 leds
-	output wire [7:0] ip	= 8'd0	// output from soc (displayed on left 2 displays in hex)
+	output wire [7:0] ip			// output from soc (displayed on left 2 displays in hex)
 );
-
-
 
 
 	// synchronising all push buttons
@@ -59,8 +57,8 @@ module soc
 			deb_sw
 			(
 				.clk(clk),
-				.enable(dval),
-				.resetn(1'b1),
+				.enable(1'd1),
+				.resetn(resetn_deb),
 				.sig_i(din[i]),
 				.sig_o(din_sync[i])
 			);
@@ -79,8 +77,8 @@ module soc
 	deb_res
 	(
 		.clk(clk),
-		.enable(dval),
-		.resetn(1'b1),
+		.enable(1'd1),
+		.resetn(1'd1),
 		.sig_i(resetn),
 		.sig_o(resetn_deb)
 	);
@@ -97,7 +95,7 @@ module soc
 	deb_tur 
 	(
 		.clk(clk),
-		.enable(dval),
+		.enable(1'd1),
 		.resetn(1'b1),
 		.sig_i(turbo_mode),
 		.sig_o(turbo_mode_deb)
@@ -108,33 +106,15 @@ module soc
 	
 	enable_gen		// converts the turbo switch to enable
 	#(
-		.ENABLE_CNT(10_000_000)
+		.ENABLE_CNT(20_000_000)
 	)
 	enb
 	(
 		.clk(clk),
-		.resetn(resetn),
-		.mode(turbo_mode),
+		.resetn(resetn_deb),
+		.mode(turbo_mode_deb),
 		.enable_out(enable_out)
 	);
-	
-	
-//	// incrementing registers when count = 0
-//	always @(posedge enable_out or negedge resetn) begin
-//		if (!resetn) begin
-//			gpo <= 6'b111111;
-//			ip <= 8'd0;
-//			dout <= 8'd0;
-//		end
-//		else begin
-//			ip <= ip + 1;
-//			gpo <= gpo + 1;
-//			dout <= dout + 1;
-//		end
-//		
-//	end
-
-	
 	
 	
 	// read only memory instantiation
@@ -156,7 +136,7 @@ module soc
 		// System
 		.clk(clk),
 		.enable(enable_out),
-		.resetn(resetn),
+		.resetn(resetn_deb),
 		// Instructions
 		.instruction(instruction),
 		.instruction_pointer(ip),
@@ -169,7 +149,7 @@ module soc
 		.reg_flag()
 		);
 		
-		assign dval = (!resetn) ? 1'b0 : gout[7];
+		assign dval = (!resetn_deb) ? 1'b0 : gout[7];
 		
 
 endmodule

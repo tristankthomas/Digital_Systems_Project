@@ -25,18 +25,19 @@ module cpu
 	wire [7:0] arg1;
 	wire [7:0] arg2;
 	wire [7:0] result;
+	wire [7:0] address;
+	wire branch_select;
+	wire [3:0] alu_op;
 	wire write_enable;
 	
 	
-
-	//assign reg_dout = result;	// arg1 (num) stored in reg_dout which is then displayed
 	assign reg_gout = 8'b1000_0000; // Turn on dval (reg_gout[7])
 	
 	always @(posedge clk or negedge resetn)
 		if (!resetn)
 			instruction_pointer <= 8'd0;
 		else if (enable)		// pointer incremented when enable out is 1 (controlled by turbo)
-			instruction_pointer <= instruction_pointer + 1;		// instruction pointer incremented and then next arg1 (from ROM) stored in reg_dout
+			instruction_pointer <= (branch_select && result) ? address : instruction_pointer + 1;		// instruction pointer incremented and then next arg1 (from ROM) stored in reg_dout
 			
 			
 	// register file
@@ -71,7 +72,7 @@ module cpu
 		.command(command),
 		.arg1(arg1),
 		.arg2(arg2),
-		.address()
+		.address(address)
 	);
 	
 
@@ -81,6 +82,8 @@ module cpu
 	(
 		.command_group(command_group),
 		.write_enable(write_enable),
+		.branch_select(branch_select),
+		.alu_op(alu_op)
 	);
 	
 	
@@ -89,6 +92,7 @@ module cpu
 	alu_insta
 	(
 		.operand_a(arg1),
+		.alu_op(alu_op),
 		.result(result)
 	);
 	
