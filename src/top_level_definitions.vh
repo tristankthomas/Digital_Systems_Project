@@ -1,0 +1,1 @@
+`define CLK_PERIOD_ns   20
