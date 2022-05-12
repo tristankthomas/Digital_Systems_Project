@@ -108,7 +108,7 @@ module soc
 	
 	enable_gen		// converts the turbo switch to enable
 	#(
-		.ENABLE_CNT(25_000_000)		// higher means slower displaying speed
+		.ENABLE_CNT(10_000_000)		// higher means slower displaying speed
 	)
 	enb
 	(

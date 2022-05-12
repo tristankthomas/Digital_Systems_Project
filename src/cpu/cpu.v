@@ -45,7 +45,7 @@ module cpu
 	reg_ista
 	(
 		.clk(clk),
-		.enable(enable),
+		.enable(1),
 		.resetn(resetn),
 		
 		.a_addr(arg1), // the argument is a number in this case (8 bits)
