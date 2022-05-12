@@ -17,7 +17,7 @@ module soc
 	output wire dval,					// used as enable for dout (not displayed)
 
 	output wire [3:0] debug,		// connected to left 4 leds
-	output wire [7:0] ip			// output from soc (displayed on left 2 displays in hex)
+	output wire [7:0] ip				// output from soc (displayed on left 2 displays in hex)
 );
 
 
@@ -106,7 +106,7 @@ module soc
 	
 	enable_gen		// converts the turbo switch to enable
 	#(
-		.ENABLE_CNT(20_000_000)
+		.ENABLE_CNT(2_000_000)		// higher means slower displaying speed
 	)
 	enb
 	(

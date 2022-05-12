@@ -58,7 +58,7 @@ module cpu
 		
 		.reg_gout(),
 		.reg_dout(reg_dout),
-		.reg_flag()
+		.reg_flag(reg_flag)
 	);
 	
 	
