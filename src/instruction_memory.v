@@ -19,7 +19,7 @@ module instruction_memory
 			7:  instruction = {`MOV, `PUR, `NUM, 8'd15, `REG, `DOUT, `N8};
 			8:  instruction = {`MOV, `PUR, `NUM, 8'd17, `REG, `DOUT, `N8};
 			9:  instruction = {`MOV, `PUR, `NUM, 8'd19, `REG, `DOUT, `N8};
-			13: instruction = {`JMP, `UNC, `N9, `N9, 8'd0};
+			10: instruction = {`JMP, `UNC, `N9, `N9, 8'd0};
 			default: instruction = 32'd0; // Default instruction is NOP
 		endcase
 		

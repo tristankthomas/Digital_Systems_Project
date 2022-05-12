@@ -12,7 +12,7 @@ module cpu
 	output reg [7:0] instruction_pointer,
 	// Inputs
 	input wire [7:0] din,
-	input wire[3:0] gpi,
+	input wire [3:0] gpi,
 	// Outputs
 	output wire [7:0] reg_dout,
 	output wire [7:0] reg_gout,

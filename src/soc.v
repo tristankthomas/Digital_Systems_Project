@@ -22,10 +22,11 @@ module soc
 
 
 	// synchronising all push buttons
-	genvar i;
+	
 	wire [3:0] gpi_sync;
 	
 	generate
+		genvar i;
 		for (i = 0; i < 4; i = i + 1)
 			begin :pbs
 				synchroniser 
@@ -42,10 +43,11 @@ module soc
 	endgenerate
 	
 	// debounding and synchronising din switches
-	genvar j;
+	
 	wire [7:0] din_sync;
 	
 	generate
+		genvar j;
 		for (j = 0; j < 8; j = j + 1)
 			begin :sw
 			debounce
@@ -106,7 +108,7 @@ module soc
 	
 	enable_gen		// converts the turbo switch to enable
 	#(
-		.ENABLE_CNT(2_000_000)		// higher means slower displaying speed
+		.ENABLE_CNT(25_000_000)		// higher means slower displaying speed
 	)
 	enb
 	(
