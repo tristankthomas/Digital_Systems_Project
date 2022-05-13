@@ -5,13 +5,17 @@
 
 // Move Commands
 `define PUR 3'b000 // Pure Move
+`define SHL 3'b001 // Move and Shift Left
+`define SHR 3'b010 // Move and Shift Right
 
 // Jump Commands
 `define UNC 3'b000 // Unconditional Jump
 
 // ALU Op Code Constants
-`define NOOP 4'b0000 // No Logic or Arithmetic Operation
-`define UNCOP 4'b0001 // Always True
+`define PUROP 4'd0 // No Logic or Arithmetic Operation
+`define UNCOP 4'd1 // Always True
+`define SHLOP 4'd2 // Left Shift
+`define SHROP 4'd3 // Right Shift
 
 // Argument Types
 `define NUM 1'b0 // Number Type
