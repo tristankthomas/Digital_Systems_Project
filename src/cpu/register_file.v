@@ -29,7 +29,7 @@ module register_file
 	reg [7:0] reg_arr [0:31]; // 32 8 bit registers not 32 bits 
 	
 	// Reads
-	assign a_data_out = reg_arr[a_addr]; // if the argument 1 type is a 1 ( 5 bit register address) then operand of alu is the contents of a_addr (or arg1)
+	assign a_data_out = reg_arr[a_addr]; // if the argument 1 type is a 1 ( 5 bit register address) then operand of alu is the contents of a_addr (or arg1) (NOTE: a_data_out corresponds to the first argument (will never write anything)
 	assign b_data_out = reg_arr[b_addr];
 	
 	// Write Functionality
@@ -57,7 +57,7 @@ module register_file
 	end
 	
 	assign reg_gout = reg_arr[`GOUT]; 	// stores the contents of register num 29 into reg_gout
-	assign reg_dout = reg_arr[`FLAG];	// stores the contents of register num 30 into reg_dout
+	assign reg_dout = reg_arr[`DOUT];	// stores the contents of register num 30 into reg_dout
 	assign reg_flag = reg_arr[`FLAG];	// stores the contents of register num 31 into reg_flag
 	
 endmodule
