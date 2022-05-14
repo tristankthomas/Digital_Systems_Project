@@ -23,7 +23,11 @@ module register_file
 	// Special Registers
 	output wire [7:0] reg_gout,
 	output wire [7:0] reg_dout,
-	output wire [7:0] reg_flag
+	output wire [7:0] reg_flag,
+	
+	input wire is_atc,
+	input wire [2:0] atc_bit,
+	output wire atc_out
 );
 	
 	reg [7:0] reg_arr [0:31]; // 32 8 bit registers not 32 bits 
@@ -31,6 +35,7 @@ module register_file
 	// Reads
 	assign a_data_out = reg_arr[a_addr]; // if the argument 1 type is a 1 ( 5 bit register address) then operand of alu is the contents of a_addr (or arg1) (NOTE: a_data_out corresponds to the first argument (will never write anything)
 	assign b_data_out = reg_arr[b_addr];
+	assign atc_out = is_atc ? reg_arr[`FLAG][atc_bit] : 1'b0;
 	
 	// Write Functionality
 	always @(posedge clk or negedge resetn) begin : write_block
@@ -43,6 +48,10 @@ module register_file
 			if (b_wr_enable && b_addr != `FLAG)
 				reg_arr[b_addr] <= b_data_in; // since the register is able to write it writes d_data_in into the register at address b (could be special reg's)
 			
+			// If ATC command, clear the atc bit
+			if (is_atc)
+				reg_arr[`FLAG][atc_bit] <= 1'b0;
+			
 			// Set FLAG bits. This must be after any register write to not miss a flag
 			for (i = 0; i < 7; i = i + 1)
 				if (flag_inputs[i])
@@ -52,12 +61,13 @@ module register_file
 			for (i = 0; i < 7; i = i + 1)
 				if (flag_inputs[i])
 					reg_arr[`FLAG][i] <= 1'b1;
+
 					
 		end
 	end
 	
 	assign reg_gout = reg_arr[`GOUT]; 	// stores the contents of register num 29 into reg_gout
-	assign reg_dout = reg_arr[`FLAG];	// stores the contents of register num 30 into reg_dout
+	assign reg_dout = reg_arr[`DOUT];	// stores the contents of register num 30 into reg_dout
 	assign reg_flag = reg_arr[`FLAG];	// stores the contents of register num 31 into reg_flag
 	
 endmodule

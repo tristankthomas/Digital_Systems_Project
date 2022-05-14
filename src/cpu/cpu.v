@@ -31,21 +31,36 @@ module cpu
 	
 	wire branch_select;
 	wire [3:0] alu_op;
+	wire is_atc;
 	wire write_enable;
 	wire [7:0] flag_inputs;
 	wire [7:0] a_data_out;
 	wire [7:0] b_data_out;
+	wire atc_out;
 	
 	
 	assign reg_gout = 8'b1000_0000; // Turn on dval (reg_gout[7])
+	
+//	MUX ip_MUX
+//	(
+//		.clk(clk),
+//		.enable(enable),
+//		.resetn(resetn),
+//		.branch_select(branch_select),
+//		.result(result),
+//		.atc_out(atc_out),
+//		.address(address),
+//		.ip(instruction_pointer),
+//		.next_ip(instruction_pointer)
+//	);
 	
 	always @(posedge clk or negedge resetn)
 		if (!resetn)
 			instruction_pointer <= 8'd0;
 		else if (enable)		// pointer incremented when enable out is 1 (controlled by turbo)
-			instruction_pointer <= (branch_select && result) ? address : instruction_pointer + 1;		// instruction pointer incremented and then next arg1 (from ROM) stored in reg_dout
+			instruction_pointer <= (branch_select && (result || atc_out)) ? address : instruction_pointer + 1;		// instruction pointer incremented and then next arg1 (from ROM) stored in reg_dout
 
-			
+			 
 	// register file
 	assign flag_inputs = {2'd0, shift_overflow, arithmetic_overflow, 4'd0};
 	
@@ -68,7 +83,11 @@ module cpu
 		
 		.reg_gout(),
 		.reg_dout(reg_dout),
-		.reg_flag(reg_flag)
+		.reg_flag(reg_flag),
+		
+		.is_atc(is_atc),
+		.atc_bit(command),
+		.atc_out(atc_out)
 	);
 	
 	
@@ -96,7 +115,8 @@ module cpu
 		.command(command),
 		.write_enable(write_enable),
 		.branch_select(branch_select),
-		.alu_op(alu_op)
+		.alu_op(alu_op),
+		.is_atc(is_atc)
 	);
 	
 	

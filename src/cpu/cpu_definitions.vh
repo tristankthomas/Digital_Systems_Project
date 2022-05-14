@@ -57,6 +57,10 @@
 `define DOUT 8'd30 // Data Output Register Address
 `define FLAG 8'd31 // Flag Register Address
 
+// Flag Register Bits
+`define OFLW 3'd4
+`define SHFT 3'd5
+
 // Other Useful Definitions
 // Zeros
 `define N8 8'd0 // 8 Zeros

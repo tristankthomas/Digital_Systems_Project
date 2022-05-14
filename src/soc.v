@@ -132,6 +132,8 @@ module soc
 		
 	// cpu instantiation
 	wire [8:0] gout;
+	wire [7:0] flag;
+	assign debug = {enable_out, flag[5], flag[4], 1'b0};
 	
 	cpu cpu_insta
 		(
@@ -148,10 +150,11 @@ module soc
 		// Outputs
 		.reg_dout(dout),
 		.reg_gout(gout),
-		.reg_flag()
+		.reg_flag(flag),
 		);
 		
 		assign dval = (!resetn_deb) ? 1'b0 : gout[7];
+		assign gpo = (!resetn_deb) ? 6'b111111 : 6'd0;
 		
 
 endmodule
