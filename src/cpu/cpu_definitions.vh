@@ -29,16 +29,23 @@
 
 // ALU Op Code Constants
 `define ALU_PUR 4'd0 // No Logic or Arithmetic Operation
-`define ALU_UNC 4'd1 // Always True
-`define ALU_SHL 4'd2 // Left Shift
-`define ALU_SHR 4'd3 // Right Shift
-`define ALU_UAD 4'd4 // Unsigned Addition
-`define ALU_SAD 4'd5 // Signed Addition
-`define ALU_UMT 4'd6 // Unsigned Multiplication
-`define ALU_SMT 4'd7 // Signed Multiplication
-`define ALU_AND 4'd8 // Bitwise AND
-`define ALU_OR  4'd9 // Bitwise OR
-`define ALU_XOR 4'd10 // Bitwise XOR
+`define ALU_SHL 4'd1 // Left Shift
+`define ALU_SHR 4'd2 // Right Shift
+
+`define ALU_UAD 4'd3 // Unsigned Addition
+`define ALU_SAD 4'd4 // Signed Addition
+`define ALU_UMT 4'd5 // Unsigned Multiplication
+`define ALU_SMT 4'd6 // Signed Multiplication
+`define ALU_AND 4'd7 // Bitwise AND
+`define ALU_OR  4'd8 // Bitwise OR
+`define ALU_XOR 4'd9 // Bitwise XOR
+
+`define ALU_UNC 4'd10 // Always True
+`define ALU_EQ  4'd11 // Equality
+`define ALU_ULT 4'd12 // Unsigned Less Than
+`define ALU_SLT 4'd13 // Signed Less Than
+`define ALU_ULE 4'd14 // Unsigned Less Than or Equal To
+`define ALU_SLE 4'd15 // Signed Less Than or Equal To
 
 // Argument Types
 `define NUM 1'b0 // Number Type

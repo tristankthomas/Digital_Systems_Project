@@ -14,8 +14,8 @@ module controller
 		
 			`NOP : begin		// No Operation
 				write_enable = 1'b0;
-				alu_op = `ALU_PUR;
 				branch_select = 1'b0;
+				alu_op = `ALU_PUR;
 			end
 			
 			`MOV : begin		// Move
@@ -32,7 +32,14 @@ module controller
 			`JMP : begin		// Jump
 				write_enable = 1'b0;
 				branch_select = 1'b1;
-				alu_op = `ALU_UNC;
+				case (command)
+					`UNC : alu_op = `ALU_UNC;
+					`EQ  : alu_op = `ALU_EQ;
+					`ULT : alu_op = `ALU_ULT;
+					`SLT : alu_op = `ALU_SLT;
+					`ULE : alu_op = `ALU_ULE;
+					`SLE : alu_op = `ALU_SLE;
+				endcase
 			end
 			
 			`ACC : begin		// Accumulate

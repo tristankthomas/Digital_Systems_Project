@@ -47,7 +47,7 @@ module cpu
 
 			
 	// register file
-	assign flag_inputs = {2'd0, shift_overflow, 5'd0};
+	assign flag_inputs = {2'd0, shift_overflow, arithmetic_overflow, 4'd0};
 	
 	register_file
 	reg_ista

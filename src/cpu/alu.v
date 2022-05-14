@@ -13,9 +13,9 @@ module alu
 );
 	wire [8:0] shift_left = {operand_a, 1'b0};
 	wire [8:0] shift_right = {1'b0, operand_a};
-	wire [8:0] unsigned_add = operand_a + operand_b;
+	wire [8:0] unsigned_add = $unsigned(operand_a) + $unsigned(operand_b);
 	wire signed [8:0] signed_add = $signed(operand_a) + $signed(operand_b);
-	wire [15:0] unsigned_mul = operand_a * operand_b;
+	wire [15:0] unsigned_mul = $unsigned(operand_a) * $unsigned(operand_b);
 	wire signed [15:0] signed_mul = $signed(operand_a) * $signed(operand_b);
 	
 	
@@ -24,6 +24,7 @@ module alu
 			`ALU_PUR : result = operand_a;			// Pure move
 			`ALU_SHL : result = shift_left[7:0];	// Move and shift left
 			`ALU_SHR : result = shift_right[8:1];	// Move and shift right
+			
 			`ALU_UAD : result = unsigned_add[7:0];
 			`ALU_SAD : result = signed_add[7:0];
 			`ALU_UMT : result = unsigned_mul[7:0];
@@ -31,7 +32,14 @@ module alu
 			`ALU_AND : result = operand_a & operand_b;
 			`ALU_OR  : result = operand_a | operand_b;
 			`ALU_XOR : result = operand_a ^ operand_b;
+			
 			`ALU_UNC : result = `TRUE;				// Unconditional true
+			`ALU_EQ  : result = operand_a == operand_b;
+			`ALU_ULT : result = $unsigned(operand_a) < $unsigned(operand_b);
+			`ALU_SLT : result = $signed(operand_a) < $signed(operand_b);
+			`ALU_ULE : result = $unsigned(operand_a) <= $unsigned(operand_b);
+			`ALU_SLE : result = $signed(operand_a) <= $signed(operand_b);
+			
 			default : result = operand_a;			// NOP operation (could return 0 instead)
 		endcase
 		
