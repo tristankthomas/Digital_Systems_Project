@@ -21,23 +21,19 @@ module soc
 );
 
 
-	// synchronising all push buttons
+	// synchronising and falling edge detection for all push buttons
 	
-	wire [3:0] gpi_sync;
+	wire [3:0] gpi_edge;
 	
 	generate
 		genvar i;
 		for (i = 0; i < 4; i = i + 1)
-			begin :pbs
-				synchroniser 
-				#(
-					.n(1)
-				)
-				s0
+			begin :pb_edge
+				falling_edge_detector pb0
 				(
 					.clk(clk),
 					.in(gpi[i]),
-					.in_sync(gpi_sync[i])
+					.out(gpi_edge[i])
 				);
 			end
 	endgenerate
@@ -52,17 +48,16 @@ module soc
 			begin :sw
 			debounce
 			#(
-
 				.CLK_PERIOD_ns(20),
 				.DEBOUNCE_TIMER_ns(30_000_000)
 			)
-			deb_sw
+			sw0
 			(
 				.clk(clk),
 				.enable(1'd1),
 				.resetn(resetn_deb),
-				.sig_i(din[i]),
-				.sig_o(din_sync[i])
+				.sig_i(din[j]),
+				.sig_o(din_sync[j])
 			);
 			end
 	endgenerate
@@ -102,6 +97,7 @@ module soc
 		.sig_i(turbo_mode),
 		.sig_o(turbo_mode_deb)
 	);
+	
 	
 	// instansiating enable_gen
 	wire enable_out;
@@ -145,16 +141,25 @@ module soc
 		.instruction(instruction),
 		.instruction_pointer(ip),
 		// Inputs
-		.din(),
-		.gpi(),
+		.din(din_reg),
+		.gpi(gpi_edge),
 		// Outputs
 		.reg_dout(dout),
 		.reg_gout(gout),
 		.reg_flag(flag),
 		);
 		
-		assign dval = (!resetn_deb) ? 1'b0 : gout[7];
-		assign gpo = (!resetn_deb) ? 6'b111111 : 6'd0;
+	assign dval = gout[7];
+	assign gpo = gout[5:0];
+	
+	reg [7:0] din_reg;
+	
+	always @(posedge clk or negedge resetn_deb)
+		if (!resetn_deb)
+			din_reg <= 8'd0;
+		else if (gpi_edge[3])
+			din_reg <= din_sync;
+			
 		
 
 endmodule

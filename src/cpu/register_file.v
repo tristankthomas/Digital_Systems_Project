@@ -21,10 +21,12 @@ module register_file
 	input wire [7:0] flag_inputs,
 	
 	// Special Registers
+	input wire [7:0] reg_din,
 	output wire [7:0] reg_gout,
 	output wire [7:0] reg_dout,
 	output wire [7:0] reg_flag,
 	
+	// ATC
 	input wire is_atc,
 	input wire [2:0] atc_bit,
 	output wire atc_out
@@ -35,6 +37,7 @@ module register_file
 	// Reads
 	assign a_data_out = reg_arr[a_addr]; // if the argument 1 type is a 1 ( 5 bit register address) then operand of alu is the contents of a_addr (or arg1) (NOTE: a_data_out corresponds to the first argument (will never write anything)
 	assign b_data_out = reg_arr[b_addr];
+	
 	assign atc_out = is_atc ? reg_arr[`FLAG][atc_bit] : 1'b0;
 	
 	// Write Functionality
@@ -56,19 +59,24 @@ module register_file
 			for (i = 0; i < 7; i = i + 1)
 				if (flag_inputs[i])
 					reg_arr[`FLAG][i] <= 1'b1;
+			// Always want the dinput register to be written by dinput
+			reg_arr[`DINP] <= reg_din;
 					
 		end else begin
 			for (i = 0; i < 7; i = i + 1)
 				if (flag_inputs[i])
 					reg_arr[`FLAG][i] <= 1'b1;
-
+			// Always want the dinput register to be written by dinput
+			reg_arr[`DINP] <= reg_din;
 					
 		end
 	end
 	
-	assign reg_gout = reg_arr[`GOUT]; 	// stores the contents of register num 29 into reg_gout
+	assign reg_gout[6:0] = reg_arr[`GOUT]; 	// stores the contents of register num 29 into reg_gout
 	assign reg_dout = reg_arr[`DOUT];	// stores the contents of register num 30 into reg_dout
 	assign reg_flag = reg_arr[`FLAG];	// stores the contents of register num 31 into reg_flag
+	
+	assign reg_gout[7] = resetn; // Temporary solution to dval
 	
 endmodule
 

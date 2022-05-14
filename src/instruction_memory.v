@@ -18,19 +18,23 @@ module instruction_memory
 //			16: instruction = {`JMP, `SLE, `NUM, 8'd0, `REG, `DOUT, 8'd13};
 //			20: instruction = {`JMP, `UNC, `N9, `N9, 8'd0};
 
-			0: instruction = set(`DOUT, 1);
-			4: instruction = acc(`SMT, `DOUT, `NUM, -2);
-			8: instruction = atc(`OFLW, 16);
-			12: instruction = jmp(4);
-			
-			16: instruction = set(`DOUT, 250);
-			20: instruction = acc(`UAD, `DOUT, `NUM, 1);
-			24: instruction = atc(`OFLW, 8);
-			28: instruction = jmp(20);
+//			0: instruction = set(`DOUT, 1);
+//			4: instruction = acc(`SMT, `DOUT, `NUM, -2);
+//			8: instruction = atc(`OFLW, 16);
+//			12: instruction = jmp(4);
+//			
+//			16: instruction = set(`DOUT, 250);
+//			20: instruction = acc(`UAD, `DOUT, `NUM, 1);
+//			24: instruction = atc(`OFLW, 8);
+//			28: instruction = jmp(20);
+			0 : instruction = set(`FLAG, 128); // sets the last bit of the flag register to 1??
+			1 : instruction = mov(`PUR, `REG, `FLAG, `GOUT); // flag register bits (from push button) stored output on leds
+			2 : instruction = mov(`PUR, `REG, `DINP, `DOUT);  // switch values output on display
+			3 : instruction = jmp(1);
 			
 			default: instruction = 32'd0; // NOP
 			
-			1, 5, 9, 13, 17, 21, 25: instruction = mov(`PUR, `REG, `FLAG, `GOUT);
+			//1, 5, 9, 13, 17, 21, 25: instruction = mov(`PUR, `REG, `FLAG, `GOUT);
 		endcase
 		
 	function [31:0] mov;

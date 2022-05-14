@@ -38,9 +38,6 @@ module cpu
 	wire [7:0] b_data_out;
 	wire atc_out;
 	
-	
-	assign reg_gout = 8'b1000_0000; // Turn on dval (reg_gout[7])
-	
 //	MUX ip_MUX
 //	(
 //		.clk(clk),
@@ -62,7 +59,7 @@ module cpu
 
 			 
 	// register file
-	assign flag_inputs = {2'd0, shift_overflow, arithmetic_overflow, 4'd0};
+	assign flag_inputs = {2'd0, shift_overflow, arithmetic_overflow, gpi};
 	
 	register_file
 	reg_ista
@@ -81,7 +78,8 @@ module cpu
 		
 		.flag_inputs(flag_inputs),
 		
-		.reg_gout(),
+		.reg_din(din),
+		.reg_gout(reg_gout),
 		.reg_dout(reg_dout),
 		.reg_flag(reg_flag),
 		
