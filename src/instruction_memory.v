@@ -52,7 +52,7 @@ module instruction_memory
 			//0: instruction = setg(`DVALB);
 			0: instruction = atc(`PUSH, 5);
 			1: instruction = atc(`POP, 23);
-			2: instruction = atc(`ADD, 9);
+			2: instruction = atc(`ADD, 36);
 			3: instruction = atc(`MULT, 8);
 			4: instruction = jmp(0);
 			// push
@@ -62,9 +62,9 @@ module instruction_memory
 			8: instruction = mov(`PUR, `REG, `DINP, `STACK0);
 			9: instruction = mov(`PUR, `REG, `STACK0, `DOUT);
 			10: instruction = setg(8'b10000000);
-			11: instruction = {`JMP, `EQ, `REG, `STACK_SIZE, `NUM, 8'd8, 8'd17};
+			11: instruction = jmp_if_size(8, 17);
 			12: instruction = resetg(8'b11000000);
-			13: instruction = {`JMP, `EQ, `REG, `STACK_SIZE, `NUM, 8'd0, 8'd20};
+			13: instruction = jmp_if_size(0, 20);
 			14: instruction = mov(`SHL, `REG, `STACK_SIZE, `STACK_SIZE); // turns off overflows and 
 			15: instruction = acc(`OR, `GOUT, `REG, `STACK_SIZE);
 			16: instruction = jmp(0);
@@ -77,7 +77,7 @@ module instruction_memory
 			21: instruction = acc(`OR, `GOUT, `REG, `STACK_SIZE);
 			22: instruction = jmp(0);
 			// pop
-			23: instruction = {`JMP, `EQ, `REG, `STACK_SIZE, `NUM, 8'd0, 8'd0};
+			23: instruction = jmp_if_size(0, 0);
 			24: instruction = resetg(8'b11000000);
 			25: instruction = mov(`PUR, `REG, `STACK1, `STACK0);
 			26: instruction = mov(`PUR, `REG, `STACK2, `STACK1);
@@ -86,10 +86,26 @@ module instruction_memory
 			29: instruction = mov(`SHR, `REG, `STACK_SIZE, `STACK_SIZE);
 			30: instruction = acc(`OR, `GOUT, `REG, `STACK_SIZE);
 			31: instruction = resetg(8'b01111111);
-			32: instruction = {`JMP, `EQ, `REG, `STACK_SIZE, `NUM, 8'd0, 8'd0};
+			32: instruction = jmp_if_size(0, 0);
 			33: instruction = setg(8'b10000000);
 			34: instruction = mov(`PUR, `REG, `STACK0, `DOUT);
 			35: instruction = jmp(0);
+			// addition
+			36: instruction = resetg(8'b11101111);
+			37: instruction = jmp_if_size(0, 0);
+			38: instruction = jmp_if_size(1, 0);
+			39: instruction = acc(`SAD, `STACK0, `REG, `STACK1); 
+			40: instruction = mov(`PUR, `REG, `STACK0, `DOUT);  // dont need to worry about enabling display since it is only disabled if there is nothing on stack
+			41: instruction = {`ACC, `OR, `REG, `FLAG, `REG, `GOUT, `N8};
+			42: instruction = resetg(8'b11011111);
+			43: instruction = mov(`PUR, `REG, `STACK2, `STACK1);
+			44: instruction = mov(`PUR, `REG, `STACK3, `STACK2);
+			45: instruction = mov(`PUR, `NUM, 8'd0, `STACK3);
+			46: instruction = resetg(8'b11110000);
+			47: instruction = mov(`SHR, `REG, `STACK_SIZE, `STACK_SIZE);
+			48: instruction = acc(`OR, `GOUT, `REG, `STACK_SIZE);
+			49: instruction = jmp(0);
+			
 //			6: instruction = {`JMP, `EQ, `REG, `FLAG, `NUM, `PUSH, 8'd0};
 //			7: instruction = jmp(0);
 //			8: instruction = set(`DOUT, 30);
@@ -121,6 +137,12 @@ module instruction_memory
 	function [31:0] resetg;
 		input [7:0] bit_mask; // bits with 1 will be left the same and bits with 0 will be turned off
 		resetg = {`ACC, `AND, `NUM, bit_mask, `REG, `GOUT, `N8};
+	endfunction
+	
+	function [31:0] jmp_if_size;
+		input [7:0] size;
+		input [7:0] addr;
+		jmp_if_size = {`JMP, `EQ, `REG, `STACK_SIZE, `NUM, size, addr};
 	endfunction
 		
 	// Set a register to a value
