@@ -7,6 +7,8 @@ module hex_tb;
 	wire [6:0] disp1;
 	wire first_dig;
 	wire second_dig;
+	wire enable = 1;
+	wire neg = 0;
 	
 	disp_hex inp
 	(
@@ -19,16 +21,16 @@ module hex_tb;
 	(
 		.segs(disp0),
 		.bin(first_dig),
-		.neg(),
-		.valid()
+		.neg(neg),
+		.valid(enable)
 	);
 	
 	sseg_decoder test2
 	(
 		.segs(disp1),
 		.bin(second_dig),
-		.neg(),
-		.valid()
+		.neg(neg),
+		.valid(enable)
 	);
 	
 	initial begin

@@ -57,12 +57,32 @@
 `define DOUT 8'd30 // Data Output Register Address
 `define FLAG 8'd31 // Flag Register Address
 
+// Calculator Registers
+`define STACK0 8'd0 // First Stack
+`define STACK1 8'd1 // Second Stack
+`define STACK2 8'd2 // Third Stack
+`define STACK3 8'd3 // Forth Stack
+`define STACK_SIZE 8'd4 // Stack Size
+
 // Flag Register Bits
+`define MULT 3'd0
+`define ADD  3'd1
+`define POP  3'd2
+`define PUSH 3'd3
+
 `define OFLW 3'd4
 `define SHFT 3'd5
 
+// Flag Register Calculator Bit Masks
+`define SHFTB 8'b00100000
+`define OFLWB 8'b00010000
+`define DVALB 8'b10000000
+
 // Other Useful Definitions
 // Zeros
+
 `define N8 8'd0 // 8 Zeros
 `define N9 9'd0 // 9 Zeros
 `define TRUE 8'd1 // 8 Bit True
+
+

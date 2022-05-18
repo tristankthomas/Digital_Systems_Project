@@ -104,7 +104,7 @@ module soc
 	
 	enable_gen		// converts the turbo switch to enable
 	#(
-		.ENABLE_CNT(10_000_000)		// higher means slower displaying speed
+		.ENABLE_CNT(20_000_000)		// higher means slower displaying speed
 	)
 	enb
 	(
@@ -129,7 +129,7 @@ module soc
 	// cpu instantiation
 	wire [8:0] gout;
 	wire [7:0] flag;
-	assign debug = {enable_out, flag[5], flag[4], 1'b0};
+	assign debug = {flag[3], flag[2], flag[1], flag[0]};
 	
 	cpu cpu_insta
 		(

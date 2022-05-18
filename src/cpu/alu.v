@@ -13,9 +13,9 @@ module alu
 );
 	wire [8:0] shift_left = {operand_a, 1'b0};
 	wire [8:0] shift_right = {1'b0, operand_a};
-	wire [8:0] unsigned_add = $unsigned(operand_a) + $unsigned(operand_b);
+	wire [8:0] unsigned_add = operand_a + operand_b;
 	wire signed [8:0] signed_add = $signed(operand_a) + $signed(operand_b);
-	wire [15:0] unsigned_mul = $unsigned(operand_a) * $unsigned(operand_b);
+	wire [15:0] unsigned_mul = operand_a * operand_b;
 	wire signed [15:0] signed_mul = $signed(operand_a) * $signed(operand_b);
 	
 	
@@ -35,12 +35,12 @@ module alu
 			
 			`ALU_UNC : result = `TRUE;				// Unconditional true
 			`ALU_EQ  : result = operand_a == operand_b;
-			`ALU_ULT : result = $unsigned(operand_a) < $unsigned(operand_b);
+			`ALU_ULT : result = operand_a < operand_b;
 			`ALU_SLT : result = $signed(operand_a) < $signed(operand_b);
-			`ALU_ULE : result = $unsigned(operand_a) <= $unsigned(operand_b);
+			`ALU_ULE : result = operand_a <= operand_b;
 			`ALU_SLE : result = $signed(operand_a) <= $signed(operand_b);
 			
-			default : result = operand_a;			// NOP operation (could return 0 instead)
+			default : result = 8'd0;			// NOP operation (could return 0 instead)
 		endcase
 		
 	always @(*) begin

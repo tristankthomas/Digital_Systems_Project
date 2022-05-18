@@ -45,7 +45,7 @@ module register_file
 		integer i;
 		if (!resetn)
 			for (i = 0; i < 32; i = i + 1)
-				reg_arr[i] <= 8'd0; // clears all the registers
+				reg_arr[i] <= 8'd0; // clears all the registers to 0
 		else if (enable) begin		// note the controlled enable is temperarily always 1 (will be fixed later)
 		
 			if (b_wr_enable && b_addr != `FLAG)
@@ -72,11 +72,11 @@ module register_file
 		end
 	end
 	
-	assign reg_gout[6:0] = reg_arr[`GOUT]; 	// stores the contents of register num 29 into reg_gout
+	assign reg_gout = reg_arr[`GOUT]; 	// stores the contents of register num 29 into reg_gout
 	assign reg_dout = reg_arr[`DOUT];	// stores the contents of register num 30 into reg_dout
 	assign reg_flag = reg_arr[`FLAG];	// stores the contents of register num 31 into reg_flag
 	
-	assign reg_gout[7] = resetn; // Temporary solution to dval
+	//assign reg_gout[7] = resetn; // Temporary solution to dval
 	
 endmodule
 

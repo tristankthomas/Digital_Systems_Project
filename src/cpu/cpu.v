@@ -55,7 +55,11 @@ module cpu
 		if (!resetn)
 			instruction_pointer <= 8'd0;
 		else if (enable)		// pointer incremented when enable out is 1 (controlled by turbo)
-			instruction_pointer <= (branch_select && (result || atc_out)) ? address : instruction_pointer + 1;		// instruction pointer incremented and then next arg1 (from ROM) stored in reg_dout
+			if ((branch_select && atc_out && !result) || (branch_select && result && !atc_out))
+				instruction_pointer <= address;
+			else
+				instruction_pointer <= instruction_pointer + 1;
+			//instruction_pointer <= (branch_select && (result == 1)) ? address : instruction_pointer + 1;		// instruction pointer incremented and then next arg1 (from ROM) stored in reg_dout
 
 			 
 	// register file
@@ -103,7 +107,6 @@ module cpu
 		.arg2(arg2),
 		.address(address)
 	);
-	
 
 	// controller
 	controller

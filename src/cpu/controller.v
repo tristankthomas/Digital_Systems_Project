@@ -64,15 +64,16 @@ module controller
 			
 			`ATC : begin	// Atomic Test and Clear
 				write_enable = 1'b0;
-				branch_select = 1'b1;
 				is_atc = 1'b1;
+				branch_select = 1'b1;
+				alu_op = 1'b0;
 			end
 					
 			default: begin		// Default
 				write_enable = 1'b0;
 				branch_select = 1'b0;
 				is_atc = 1'b0;
-				alu_op = `ALU_PUR;
+				alu_op = 1'b0;
 			end
 		endcase
 		
