@@ -129,7 +129,7 @@ module soc
 	// cpu instantiation
 	wire [8:0] gout;
 	wire [7:0] flag;
-	assign debug = {flag[3], flag[2], flag[1], flag[0]};
+	assign debug = {flag[4], flag[2], flag[1], flag[0]};
 	
 	cpu cpu_insta
 		(

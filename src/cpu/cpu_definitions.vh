@@ -73,10 +73,6 @@
 `define OFLW 3'd4
 `define SHFT 3'd5
 
-// Flag Register Calculator Bit Masks
-`define SHFTB 8'b00100000
-`define OFLWB 8'b00010000
-`define DVALB 8'b10000000
 
 // Other Useful Definitions
 // Zeros
