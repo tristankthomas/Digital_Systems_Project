@@ -6,6 +6,7 @@ module soc
 	input wire clk,					// 50MHz clock
 	input wire resetn,  				// connected to left most switch
 	input wire turbo_mode,			// connected to second left most switch
+	output wire mode,
 
 	// GPIO
 	input wire [3:0] gpi,			// connected to right 4 push buttons
@@ -19,8 +20,24 @@ module soc
 	output wire [3:0] debug,		// connected to left 4 leds
 	output wire [7:0] ip				// output from soc (displayed on left 2 displays in hex)
 );
-
-
+	
+	assign debug[3] = long_press;
+	wire long_press;
+	
+		// detecting long press of pb1
+	
+	long_press_detect
+	#(
+		.CLK_PERIOD_ns(20),
+		.PRESS_TIMER_ns(2_000_000_000)
+	)
+	pb_long
+	(
+		.clk(clk),
+		.in(gpi[3]),
+		.out(long_press)
+	);
+	assign mode = long_press;
 	// synchronising and falling edge detection for all push buttons
 	
 	wire [3:0] gpi_edge;
@@ -129,7 +146,6 @@ module soc
 	// cpu instantiation
 	wire [8:0] gout;
 	wire [7:0] flag;
-	assign debug = {flag[4], flag[2], flag[1], flag[0]};
 	
 	cpu cpu_insta
 		(
@@ -137,6 +153,7 @@ module soc
 		.clk(clk),
 		.enable(enable_out),
 		.resetn(resetn_deb),
+		.long_press(long_press),
 		// Instructions
 		.instruction(instruction),
 		.instruction_pointer(ip),
@@ -146,7 +163,7 @@ module soc
 		// Outputs
 		.reg_dout(dout),
 		.reg_gout(gout),
-		.reg_flag(flag),
+		.reg_flag(flag)
 		);
 		
 	assign dval = gout[7];
@@ -160,7 +177,7 @@ module soc
 		else if (gpi_edge[3])
 			din_reg <= din_sync;
 			
-		
+	
 
 endmodule
 

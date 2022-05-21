@@ -1,6 +1,4 @@
-// Display a Hexadecimal Digit, a Negative Sign, or a Blank, on a 7-segment Display
-`default_nettype none
-
+`timescale 1ns/1ns
 `define NEG         7'b011_1111
 `define ZERO        7'b100_0000
 `define ONE         7'b111_1001
@@ -18,6 +16,78 @@
 `define THIRTEEN    7'b010_0001
 `define FOURTEEN    7'b000_0110
 `define FIFTEEN     7'b000_1110
+
+module dec_tb;
+	
+	reg signed [7:0] in = 8'd0;
+	wire [6:0] disp0;
+	wire [6:0] disp1;
+	wire [6:0] disp2;
+	wire [6:0] disp3;
+	wire [3:0] first_dig;
+	wire [3:0] second_dig;
+	wire [3:0] third_dig;
+	wire [3:0] fourth_dig;
+
+	wire [3:0] neg;
+	wire enable = 1;
+	wire [3:0] valid;
+	integer i;
+	disp_decimal inp
+	(
+		.x(in),
+		.enable(enable),
+		.disp0(disp0),
+		.disp1(disp1),
+		.disp2(disp2),
+		.disp3(disp3)
+	);
+	
+	sseg_decoder test1
+	(
+		.segs(disp0),
+		.bin(first_dig),
+		.neg(neg[0]),
+		.valid(valid[0])
+	);
+	
+	sseg_decoder test2
+	(
+		.segs(disp1),
+		.bin(second_dig),
+		.neg(neg[1]),
+		.valid(valid[1])
+	);
+	sseg_decoder test3
+	(
+		.segs(disp2),
+		.bin(third_dig),
+		.neg(neg[2]),
+		.valid(valid[2])
+	);
+	sseg_decoder test4
+	(
+		.segs(disp3),
+		.bin(fourth_dig),
+		.neg(neg[3]),
+		.valid(valid[3])
+	);
+
+	
+	initial begin
+		
+		for (i = -128; i < 127; i = i + 1) begin
+			if (i % 13 == 0) begin
+				#5 in = i;
+				#1
+				$display("%-4d is decoded to [%d : %d : %d : %d], neg = %b, valid = %b", i, fourth_dig, third_dig, second_dig, first_dig, neg, valid);
+			end
+		end
+	
+		$stop;
+	end
+endmodule
+
 
 module sseg_decoder
 (

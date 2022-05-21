@@ -1,8 +1,8 @@
 `timescale 1ns/1ns
 `define PERIOD 20
 `define HALF_PERIOD 10
-`define TIMER_PERIOD 30_000_000
-`define NUM_CLKS_TIMEOUT 200_000_000
+`define TIMER_PERIOD 200
+`define NUM_CLKS_TIMEOUT 2000
 
 
 module debounce_tb;
@@ -34,7 +34,7 @@ module debounce_tb;
         .clk(clk),
         .enable(enable),
         .resetn(resetn),
-        .sig_i_sync(in),
+        .sig_i(in),
         .sig_o(out)
 
     );
@@ -52,22 +52,22 @@ module debounce_tb;
 		time_1 = $time;
 		in = !in;
 
-		$display("at time %tps, the output is %d", $time, out);
+		$display("at time %tns, the output is %d", $time/1000.0, out);
 		@(posedge out)
 		time_2 = $time;
-		$display("after %tps, the output is %d", (time_2 - time_1), out);
+		$display("after %tns, the output is %d", (time_2 - time_1)/1000.0, out);
 		
 		#1 in = !in;
-		#2 in = !in;
-		#(`TIMER_PERIOD + 100_000) in = !in;
+		#10 in = !in;
+		#(`TIMER_PERIOD + 200) in = !in;
 		time_3 = $time;
 		@(negedge out);
 		time_4 = $time;
-		$display("after %tps, the output is %d", (time_4 - time_3), out);
+		$display("after %tns, the output is %d", (time_4 - time_3)/1000.0, out);
 		in = !in;
 		@(posedge out);
 		time_5 = $time;
-		$display("after %tps, the output is %d", (time_5 - time_4), out);
+		$display("after %tns, the output is %d", (time_5 - time_4)/1000.0, out);
 		$stop;
 		
 		

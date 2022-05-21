@@ -9,47 +9,9 @@ module instruction_memory
 
 	always @(*)
 		case(address)
-//			0:  instruction = {`MOV, `PUR, `NUM, 8'd1, `REG, `DOUT, `N8};
-//			//2:  instruction = {`ACC, `SAD, `NUM, 8'd127, `REG, `DOUT, `N8}; there to test the flag register
-//			4:  instruction = {`ACC, `SMT, `NUM, -8'd2, `REG, `DOUT, `N8};
-//			7:  instruction = {`JMP, `SLT, `REG, `DOUT, `NUM, 8'd64, 8'd4};
-//			10: instruction = {`MOV, `PUR, `NUM, 8'd100, `REG, `DOUT, `N8};
-//			13: instruction = {`ACC, `SAD, `NUM, -8'd7, `REG, `DOUT, 8'd13};
-//			16: instruction = {`JMP, `SLE, `NUM, 8'd0, `REG, `DOUT, 8'd13};
-//			20: instruction = {`JMP, `UNC, `N9, `N9, 8'd0};
 
-
-			
-			
-//			0: instruction = {`ACC, `OR, `NUM, 8'b10000000, `REG, `GOUT, `N8};
-//			1: instruction = set(`DOUT, 20); 
-//			2: instruction = acc(`SAD, `DOUT, `NUM, -7);
-//			3: instruction = {`JMP, `SLT, `NUM, -8'd50, `REG, `DOUT, 8'd2};
-//			4: instruction = set(`DOUT, 20);
-//			5: instruction = acc(`UAD, `DOUT, `NUM, -7);
-//			6: instruction = jmp(5);
-
-
-
-//			0: instruction = set(`DOUT, 1);
-//			4: instruction = acc(`SMT, `DOUT, `NUM, -2);
-//			8: instruction = atc(`OFLW, 16);
-//			12: instruction = jmp(4);
-//			
-//			16: instruction = set(`DOUT, 250);
-//			20: instruction = acc(`UAD, `DOUT, `NUM, 1);
-//			24: instruction = atc(`OFLW, 8);
-//			28: instruction = jmp(20);
-			
-//			0 : instruction = set(`FLAG, 128); // sets the last bit of the flag register to 1??
-//			1 : instruction = mov(`PUR, `REG, `FLAG, `GOUT); // flag register bits (from push button) stored output on leds
-//			2 : instruction = mov(`PUR, `REG, `DINP, `DOUT);  // switch values output on display
-//			3 : instruction = jmp(1);
-
-
-			// Instructions for RPN calculator\
-			// wait  // the first 4 bits of flag register are triggered by pbs so atc will move to address then clear the flag bit
-			//0: instruction = setg(`DVALB); 
+			// Instructions for RPN calculator
+			// wait
 			0: instruction = atc(`PUSH, 5);
 			1: instruction = atc(`POP, 23);
 			2: instruction = atc(`ADD, 36);
@@ -60,13 +22,13 @@ module instruction_memory
 			6: instruction = mov(`PUR, `REG, `STACK1, `STACK2);
 			7: instruction = mov(`PUR, `REG, `STACK0, `STACK1);
 			8: instruction = mov(`PUR, `REG, `DINP, `STACK0);
-			9: instruction = mov(`PUR, `REG, `STACK0, `DOUT); // display new stack0
-			10: instruction = setg(`NUM, 8'b10000000); // turn on dval and leave other bits
-			11: instruction = jmp_if_size(8, 17);  // jump to overflow code if stack if full
-			12: instruction = resetg(`NUM, 8'b11000000); // reset all bits of gout except dval
-			13: instruction = jmp_if_size(0, 20); // jump to initialise code is stack is empty
-			14: instruction = mov(`SHL, `REG, `STACK_SIZE, `STACK_SIZE); // shift stack size to the left
-			15: instruction = acc(`OR, `GOUT, `REG, `STACK_SIZE);  // Setting the stack size bits in gout whilst leaving the other bits
+			9: instruction = mov(`PUR, `REG, `STACK0, `DOUT); 					// display new stack0
+			10: instruction = setg(`NUM, 8'b10000000); 							// turn on dval and leave other bits
+			11: instruction = jmp_if_size(8, 17);  								// jump to overflow code if stack if full
+			12: instruction = resetg(`NUM, 8'b11000000); 						// reset all bits of gout except dval
+			13: instruction = jmp_if_size(0, 20); 									// jump to initialise code is stack is empty
+			14: instruction = mov(`SHL, `REG, `STACK_SIZE, `STACK_SIZE); 	// shift stack size to the left
+			15: instruction = acc(`OR, `GOUT, `REG, `STACK_SIZE);  			// Setting the stack size bits in gout whilst leaving the other bits
 			16: instruction = jmp(0);
 			// stack overflow
 			17: instruction = setg(`NUM, 8'b00100000); 							// set the overflow led to 1 whilst leaving all other bits
@@ -129,18 +91,8 @@ module instruction_memory
 			69: instruction = setg(`NUM, 8'b00010000);
 			70: instruction = jmp(60);
 			
-//			6: instruction = {`JMP, `EQ, `REG, `FLAG, `NUM, `PUSH, 8'd0};
-//			7: instruction = jmp(0);
-//			8: instruction = set(`DOUT, 30);
-//			9: instruction = jmp(0);
-//			10: instruction = set(`DOUT, 40);
-//			11: instruction = jmp(0);
-//			12: instruction = set(`DOUT, 50);
-//			13: instruction = jmp(0);
-			
 			default: instruction = 32'd0; // NOP
-			
-			//1, 5, 9, 13, 17, 21, 25: instruction = mov(`PUR, `REG, `FLAG, `GOUT);
+
 		endcase
 		
 	function [31:0] mov;

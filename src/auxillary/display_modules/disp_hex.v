@@ -4,6 +4,7 @@
 module disp_hex
 (
 	input [7:0] data_in,
+	input turbo_mode,
 	output [6:0] disp0,
 	output [6:0] disp1
 );
@@ -14,7 +15,8 @@ module disp_hex
 	(
 		.bin(first_dig), 
 		.neg(1'b0), 
-		.enable(1'b1), 
+		.enable(1'b1),
+		.turbo_mode(turbo_mode),
 		.segs(disp1)
 	);
 	
@@ -22,7 +24,8 @@ module disp_hex
 	(
 		.bin(second_dig), 
 		.neg(1'b0), 
-		.enable(1'b1), 
+		.enable(1'b1),
+		.turbo_mode(turbo_mode),
 		.segs(disp0)
 	);
 	

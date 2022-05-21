@@ -25,6 +25,7 @@ module top
 	 wire [7:0] dout;
 	 wire dval;
 	 wire [7:0] ip;
+	 wire disp_mode;
 	 
 	// Instantiate system on chip module
 	soc soc_t
@@ -32,12 +33,13 @@ module top
 		.clk(CLOCK_50), 
 		.resetn(~SW[9]), 
 		.turbo_mode(SW[8]),
+		.mode(disp_mode),
 		.gpi(~KEY[3:0]), 
 		.gpo(LEDR[5:0]), 
 		.din(SW[7:0]), 
 		.dout(dout),	// output
 		.dval(dval),	// output
-		.debug(LEDR[9:6]), 
+		.debug(LEDR[8:6]), 
 		.ip(ip)	// output
 	);
 		
@@ -54,9 +56,11 @@ module top
 	
 	disp_hex ip_disp
 	(
-		.data_in(ip), 
+		.data_in(ip),
+		.turbo_mode(SW[8]),
 		.disp0(HEX4), 
 		.disp1(HEX5)
 	);
+	assign LEDR[9] = disp_mode;
 
 endmodule 

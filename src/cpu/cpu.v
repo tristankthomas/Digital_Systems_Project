@@ -7,6 +7,7 @@ module cpu
 	input wire clk,
 	input wire enable,
 	input wire resetn,
+	input wire long_press,
 	// Instructions
 	input wire [31:0] instruction,
 	output reg [7:0] instruction_pointer,
@@ -71,6 +72,7 @@ module cpu
 		.clk(clk),
 		.enable(enable), // NOTE: leaving this to enable introduces a delay (from the start even for move command)
 		.resetn(resetn),
+		.long_press(long_press),
 		
 		.a_addr(arg1),
 		.a_data_out(a_data_out), // This value is only used in ALU if arg1 is a register address (if not its never used) (operand_a)
