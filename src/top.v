@@ -44,10 +44,11 @@ module top
 	);
 		
 	// Instantiate display modules
-	disp_decimal snum_disp
+	disp_dout snum_disp
 	(
 		.x(dout), 
-		.enable(dval), 
+		.enable(dval),
+		.mode(disp_mode),
 		.disp0(HEX0), 
 		.disp1(HEX1),
 		.disp2(HEX2), 
@@ -62,5 +63,5 @@ module top
 		.disp1(HEX5)
 	);
 	assign LEDR[9] = disp_mode;
-
+	
 endmodule 

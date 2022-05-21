@@ -1,8 +1,25 @@
 // Displays an 8-bit 2's complent number of four 7-segment displays
 
-module disp_decimal
+
+//module disp_dout
+//(
+//	input [7:0] num,
+//	input enable,
+//	input mode,
+//	output [6:0] disp0, disp1, disp2, disp3
+//);
+
+	
+
+
+
+//module disp_binary
+//(
+//	
+module disp_dout
 (
 	input signed [7:0] x,
+	input mode,
 	input enable,
 	output [6:0] disp0, disp1, disp2, disp3
 ); 

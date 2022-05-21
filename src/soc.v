@@ -21,10 +21,9 @@ module soc
 	output wire [7:0] ip				// output from soc (displayed on left 2 displays in hex)
 );
 	
-	assign debug[3] = long_press;
 	wire long_press;
-	
-		// detecting long press of pb1
+	wire disp_mode;
+	// detecting long press of pb1
 	
 	long_press_detect
 	#(
@@ -37,7 +36,25 @@ module soc
 		.in(gpi[3]),
 		.out(long_press)
 	);
-	assign mode = long_press;
+	wire long_press_edge;
+	
+	rising_edge_detector long_edge
+	(
+		.clk(clk),
+		.in(long_press),
+		.out(long_press_edge)
+	);
+	
+	assign mode = disp_mode;
+	
+	
+	mode_toggler mode_insta
+	(
+		.trigger(long_press_edge),
+		.mode_num(disp_mode)
+	);
+	
+	
 	// synchronising and falling edge detection for all push buttons
 	
 	wire [3:0] gpi_edge;
