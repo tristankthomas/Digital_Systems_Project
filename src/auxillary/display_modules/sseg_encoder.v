@@ -4,11 +4,12 @@ module SSeg(
 	input wire [3:0] bin, 
 	input wire neg, 
 	input wire enable,
+	input wire mode,
 	input wire turbo_mode,
 	output reg [6:0] segs );
 	
 	always @(*)
-		if (enable) begin
+		if (enable && !mode) begin
 			if (neg) segs = 7'b011_1111;
 			else if (turbo_mode) segs = 7'b100_0000;
 			else begin

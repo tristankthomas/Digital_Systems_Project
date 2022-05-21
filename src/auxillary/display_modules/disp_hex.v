@@ -16,6 +16,7 @@ module disp_hex
 		.bin(first_dig), 
 		.neg(1'b0), 
 		.enable(1'b1),
+		.mode(0),
 		.turbo_mode(turbo_mode),
 		.segs(disp1)
 	);
@@ -25,6 +26,7 @@ module disp_hex
 		.bin(second_dig), 
 		.neg(1'b0), 
 		.enable(1'b1),
+		.mode(0),
 		.turbo_mode(turbo_mode),
 		.segs(disp0)
 	);

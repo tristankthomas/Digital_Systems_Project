@@ -2,7 +2,7 @@
 
 module snum_to_sseg(
 	input [7:0] x,
-	input neg, enable,
+	input neg, enable, mode,
 	output reg [7:0] xo,
 	output reg eno,
 	output [6:0] segs);
@@ -16,7 +16,8 @@ module snum_to_sseg(
 	(
 		.bin(digit), 
 		.neg(n), 
-		.enable(enable), 
+		.enable(enable),
+		.mode(mode),
 		.turbo_mode(0),
 		.segs(segs)
 	); // displays the last digit of num (only if enable is 1)
