@@ -28,7 +28,7 @@ module cpu
 	wire [2:0] command_group;
 	wire [2:0] command;
 	wire [7:0] arg1;
-	wire `	  arg1_type;
+	wire  	  arg1_type;
 	wire [7:0] arg2;
 	wire 		  arg2_type;
 	wire [7:0] address;

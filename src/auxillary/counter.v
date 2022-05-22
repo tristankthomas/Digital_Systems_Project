@@ -21,9 +21,9 @@ module counter
 	
 	// flip flop
 	always @(posedge clk) begin
-		if (!resetn) begin
+		if (!resetn)
 			count <= MAX_COUNT - 1;
-		else 
+		else begin
 			if (reset_sync)
 				count <= MAX_COUNT - 1;
 			else
