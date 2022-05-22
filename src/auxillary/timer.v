@@ -1,3 +1,4 @@
+/* Timer used for the debouncer */
 
 module timer
 #(
@@ -35,7 +36,6 @@ module timer
 	);
 	
 	// Function that gets correct timer period
-	
 	function [31:0] get_timer_period(
 		input [15:0] type_str
 	);
@@ -48,7 +48,6 @@ module timer
 	endfunction
 	
 	// Function that gets correct conversion factor for given type
-	
 	function [31:0] get_multiplier(
 		input [15:0] type_str
 	);
@@ -67,19 +66,18 @@ endmodule
 	
 	
 	// basic timer
-	
-	module timer_base
-	#(
-		parameter MAX_COUNT = 10
-	)
-	(
-		input wire clk,
-		input wire enable,
-		input wire resetn,
-		input wire sync_resetn,
-		input wire start,
-		output wire done
-	);
+module timer_base
+#(
+	parameter MAX_COUNT = 10
+)
+(
+	input wire clk,
+	input wire enable,
+	input wire resetn,
+	input wire sync_resetn,
+	input wire start,
+	output wire done
+);
 	
 	
 	localparam COUNTER_BITS = $clog2(MAX_COUNT); // Calculate actual bit width
@@ -94,17 +92,19 @@ endmodule
 	reg [1:0] state = IDLE;
 	
 	always @(posedge clk or negedge resetn) begin // 
-	
-		if (!resetn) begin	// resetn active low and can occur outside of rising edge
+		// resetn active low and controlled by asynchronous reset switch
+		if (!resetn) begin	
 			count <= MAX_COUNT;
 			state <= IDLE;
 			
 		end else if (enable) begin
 		
-			if (!sync_resetn) begin		// sync_resetn active low and occurs at rising edge
-				count <= MAX_COUNT - 2; // should be -1
+			// sync_resetn active low and controlled by logic of debouncer
+			if (!sync_resetn) begin		
+				count <= MAX_COUNT - 2;
 				state <= IDLE;
-			end else begin 
+			end else begin
+			
 				// FSM Logic
 				case (state)
 					IDLE:
@@ -126,17 +126,18 @@ endmodule
 						state <= IDLE;
 				endcase
 				
-				// Counter Logic
+				// Counter logic
 				if (state == COUNTING_DOWN)
 					count <= count - 1;
 				else if (state == STOPPED)
 					count <= MAX_COUNT - 2;
 				else 
-					count <= MAX_COUNT - 2; // should be -1
+					count <= MAX_COUNT - 2; 
 			end
 		end
 	end
 	
+	// output logic
 	assign done = (state == STOPPED);
 	
 endmodule

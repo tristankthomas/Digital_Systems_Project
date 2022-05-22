@@ -1,20 +1,23 @@
+/* Controls and undertakes the computer processing 
+  DECODE PHASE */
+  
 `default_nettype none
 `include "cpu_definitions.vh"
 
 module cpu
 (
 	// System
-	input wire clk,
-	input wire enable,
-	input wire resetn,
-	input wire [3:0]long_press,
-	input wire [3:0]long_edge,
+	input wire 			clk,
+	input wire 			enable,
+	input wire 			resetn,
+	input wire [3:0]	long_press,
+	input wire [3:0]	long_edge,
 	// Instructions
 	input wire [31:0] instruction,
-	output reg [7:0] instruction_pointer,
+	output reg [7:0] 	instruction_pointer,
 	// Inputs
-	input wire [7:0] din,
-	input wire [3:0] gpi,
+	input wire [7:0]	din,
+	input wire [3:0] 	gpi,
 	// Outputs
 	output wire [7:0] reg_dout,
 	output wire [7:0] reg_gout,
@@ -25,63 +28,57 @@ module cpu
 	wire [2:0] command_group;
 	wire [2:0] command;
 	wire [7:0] arg1;
-	wire arg1_type;
+	wire `	  arg1_type;
 	wire [7:0] arg2;
-	wire arg2_type;
-	wire [7:0] result;
+	wire 		  arg2_type;
 	wire [7:0] address;
 	
-	wire branch_select;
+	wire [7:0] result;
+	wire 		  branch_select;
 	wire [4:0] alu_op;
-	wire is_atc;
-	wire write_enable;
+	wire 		  is_atc;
+	wire 		  write_enable;
 	wire [7:0] flag_inputs;
 	wire [7:0] a_data_out;
 	wire [7:0] b_data_out;
-	wire atc_out;
+	wire 		  atc_out;
 	
-//	MUX ip_MUX
-//	(
-//		.clk(clk),
-//		.enable(enable),
-//		.resetn(resetn),
-//		.branch_select(branch_select),
-//		.result(result),
-//		.atc_out(atc_out),
-//		.address(address),
-//		.ip(instruction_pointer),
-//		.next_ip(instruction_pointer)
-//	);
 	
 	always @(posedge clk or negedge resetn)
 		if (!resetn)
 			instruction_pointer <= 8'd0;
-		else if (enable)		// pointer incremented when enable out is 1 (controlled by turbo)
+		else if (enable)		// rate of pointer movement based on enable
+			
+			// pointer moves to specific address
 			if ((branch_select && atc_out && !result) || (branch_select && result && !atc_out))
 				instruction_pointer <= address;
+			// pointer incremented if certain conditions not met
 			else
 				instruction_pointer <= instruction_pointer + 1;
-			//instruction_pointer <= (branch_select && (result == 1)) ? address : instruction_pointer + 1;		// instruction pointer incremented and then next arg1 (from ROM) stored in reg_dout
-
 			 
-	// register file
+
+	// flag register composition
 	assign flag_inputs = {long_edge[1:0], shift_overflow, arithmetic_overflow, gpi};
 	
+	// register file
 	register_file
 	reg_ista
 	(
 		.clk(clk),
-		.enable(enable), // NOTE: leaving this to enable introduces a delay (from the start even for move command)
+		.enable(enable),
 		.resetn(resetn),
 		.long_press(long_press),
 		
 		.a_addr(arg1),
-		.a_data_out(a_data_out), // This value is only used in ALU if arg1 is a register address (if not its never used) (operand_a)
+		// only used in ALU if arg1 is a register address (operand_a)
+		.a_data_out(a_data_out), 
 		
 		.b_addr(arg2),
-		.b_data_in(result),  // Writes this value into the register specifed by argument 2
+		// Writes this value into the register specifed by argument 2
+		.b_data_in(result),  
 		.b_wr_enable(write_enable),
-		.b_data_out(b_data_out),  // Takes the value at b_addr and stores it in b_data_out (applicable if this value is being operated on (accumulate)) (operand_b)
+		// Takes the value at b_addr and stores it in b_data_out (operand_b if used)
+		.b_data_out(b_data_out),  
 		
 		.flag_inputs(flag_inputs),
 		
@@ -125,8 +122,11 @@ module cpu
 	
 	
 	// ALU
-	wire [7:0] operand_a = arg1_type ? a_data_out : arg1; // operand a is a number if the type is 0 or whatever is stored in the register at a_addr if 1
+	// operand a is a number if the type is 0 or whatever is stored in the register at a_addr if 1
+	wire [7:0] operand_a = arg1_type ? a_data_out : arg1;
+	// operand b is a number if the type is 0 or whatever is stored in the register at b_addr if 1
 	wire [7:0] operand_b = arg2_type ? b_data_out : arg2;
+	
 	wire shift_overflow;
 	wire arithmetic_overflow;
 	alu
@@ -141,8 +141,6 @@ module cpu
 		
 	);
 	
-	
-
 	
 			
 endmodule

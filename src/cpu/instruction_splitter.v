@@ -1,3 +1,5 @@
+// Splits the instruction into components */
+
 `include "cpu_definitions.vh"
 
 module instruction_splitter

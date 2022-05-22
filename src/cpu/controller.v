@@ -1,89 +1,90 @@
+/* Used to return certain parameters based on the current instruction command */
 `default_nettype none
 `include "cpu_definitions.vh"
-	// Control unit
+
 module controller
 (
 	input wire [2:0] command_group,
 	input wire [2:0] command,
-	output reg write_enable,
-	output reg [4:0] alu_op,		// only useful once the specific command is added in particular for conditional jumps
-	output reg branch_select,		// doesnt mean jump will occur only signifies that jump will occur if condition is true (from alu) (branch refers to instruction pointer (three branches))
-	output reg is_atc
+	output reg 		  write_enable,
+	output reg [4:0] alu_op,
+	output reg 		  branch_select,
+	output reg 		  is_atc
 );
 	always @(*)
 		case (command_group)
 		
-			`NOP : begin		// No Operation
+			`NOP : begin			// No Operation
 				write_enable = 1'b0;
 				branch_select = 1'b0;
 				is_atc = 1'b0;
 				alu_op = `ALU_PUR;
 			end
 			
-			`MOV : begin		// Move
-				write_enable = 1'b1; // Needs to be able to write the number in the first argument into the second arguments (register)
-				branch_select = 1'b0;
-				is_atc = 1'b0;
-				case (command)
-					`PUR : alu_op = `ALU_PUR;		// Constant for the alu to return operand a
-					`SHL : alu_op = `ALU_SHL;		// Constant for the alu to return operand a shifted left
-					`SHR : alu_op = `ALU_SHR;		// Constant for the alu to return operand a shifted right
-					default : alu_op = `ALU_PUR;	// Constant for the alu to return operand a
-				endcase
-			end
-			
-			`JMP : begin		// Jump
-				write_enable = 1'b0;
-				branch_select = 1'b1;
-				is_atc = 1'b0;
-				case (command)
-					`UNC : alu_op = `ALU_UNC;
-					`EQ  : alu_op = `ALU_EQ;
-					`ULT : alu_op = `ALU_ULT;
-					`SLT : alu_op = `ALU_SLT;
-					`ULE : alu_op = `ALU_ULE;
-					`SLE : alu_op = `ALU_SLE;
-					default : alu_op = `ALU_PUR;
-				endcase
-			end
-			
-			`ACC_ART : begin		// Accumulate
-				write_enable = 1'b1; // needs to be able to write the result from the ALU into the second argument (register)
-				branch_select = 1'b0;
-				is_atc = 1'b0;
-				case (command)
-					`UAD : alu_op = `ALU_UAD;
-					`SAD : alu_op = `ALU_SAD;
-					`UMT : alu_op = `ALU_UMT;
-					`SMT : alu_op = `ALU_SMT;
-					`USB : alu_op = `ALU_USB;
-					`SSB : alu_op = `ALU_SSB;
-					`UDV : alu_op = `ALU_UDV;
-					`SDV : alu_op = `ALU_SDV;
-					default : alu_op = `ALU_PUR;
-				endcase
-			end
-			
-			`ACC_LOG : begin
+			`MOV : begin			// Move
 				write_enable = 1'b1;
 				branch_select = 1'b0;
 				is_atc = 1'b0;
 				case (command)
-					`AND : alu_op = `ALU_AND;
-					`OR  : alu_op = `ALU_OR;
-					`XOR : alu_op = `ALU_XOR;
+					`PUR : alu_op = `ALU_PUR;		// Pure move
+					`SHL : alu_op = `ALU_SHL;		// Left bit shift
+					`SHR : alu_op = `ALU_SHR;		// Right bit shift
+					default : alu_op = `ALU_PUR;	
+				endcase
+			end
+			
+			`JMP : begin			// Jump
+				write_enable = 1'b0;
+				branch_select = 1'b1;
+				is_atc = 1'b0;
+				case (command)
+					`UNC : alu_op = `ALU_UNC;		// Unconditional
+					`EQ  : alu_op = `ALU_EQ;		// Equality
+					`ULT : alu_op = `ALU_ULT;		// Unsigned less than
+					`SLT : alu_op = `ALU_SLT;		// Signed less than
+					`ULE : alu_op = `ALU_ULE;		// Unsigned less than or equal to
+					`SLE : alu_op = `ALU_SLE;		// Signed less than or equal to
 					default : alu_op = `ALU_PUR;
 				endcase
 			end
 			
-			`ATC : begin	// Atomic Test and Clear
+			`ACC_ART : begin		// Arithmetic Accumulate
+				write_enable = 1'b1; 
+				branch_select = 1'b0;
+				is_atc = 1'b0;
+				case (command)
+					`UAD : alu_op = `ALU_UAD;		// Unsigned addition
+					`SAD : alu_op = `ALU_SAD;		// Signed addition
+					`UMT : alu_op = `ALU_UMT;		// Unsigned multiplication
+					`SMT : alu_op = `ALU_SMT;		// Signed multiplication	
+					`USB : alu_op = `ALU_USB;		// Unsigned subtraction
+					`SSB : alu_op = `ALU_SSB;		// Signed subtraction
+					`UDV : alu_op = `ALU_UDV;		// Unsigned floor division
+					`SDV : alu_op = `ALU_SDV;		// Signed floor division
+					default : alu_op = `ALU_PUR;
+				endcase
+			end
+			
+			`ACC_LOG : begin		// Logical Accumulate
+				write_enable = 1'b1;
+				branch_select = 1'b0;
+				is_atc = 1'b0;
+				case (command)
+					`AND : alu_op = `ALU_AND;		// Bitwise AND
+					`OR  : alu_op = `ALU_OR;		// Bitwise OR
+					`XOR : alu_op = `ALU_XOR;		// Bitwise XOR
+					default : alu_op = `ALU_PUR;
+				endcase
+			end
+			
+			`ATC : begin			// Atomic Test and Clear
 				write_enable = 1'b0;
 				is_atc = 1'b1;
 				branch_select = 1'b1;
 				alu_op = 1'b0;
 			end
 					
-			default: begin		// Default
+			default: begin			// Default
 				write_enable = 1'b0;
 				branch_select = 1'b0;
 				is_atc = 1'b0;

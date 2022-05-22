@@ -1,3 +1,4 @@
+/* Debounces the input switches using a factored approach */
 
 module debounce
 #(
@@ -22,22 +23,19 @@ module debounce
 		.in(sig_i),
 		.in_sync(sig_i_sync)
 	);
-
-	localparam TIMER_ADJUST = DEBOUNCE_TIMER_ns - 2 * CLK_PERIOD_ns; // Since the synchroniser synchronises input by two clock cycles
+	
+	// Since the synchroniser synchronises input by two clock cycles
+	localparam TIMER_ADJUST = DEBOUNCE_TIMER_ns - 2 * CLK_PERIOD_ns; 
 	
 	// States
-	localparam
-		ON = 1'b1,
-		OFF = 1'b0;
+	localparam ON = 1'b1, OFF = 1'b0;
 
-	
-	
 	reg state = OFF;
 	wire timer_resetn;
 	wire timer_start;
 	wire done;
 	
-	// counter instansitation
+	// timer instansitation
 	timer
 	#(
 		.CLK_PERIOD_ns(CLK_PERIOD_ns),
@@ -79,14 +77,14 @@ module debounce
 		end
 	end
 	
+	// reset and start logic
 	assign timer_resetn = (sig_i_sync != sig_o);
 	assign timer_start = !done && sig_i_sync != sig_o;
+	
+	// output logic
 	assign sig_o = state;
 
 
-	
-	
-	
 endmodule
 	
 	

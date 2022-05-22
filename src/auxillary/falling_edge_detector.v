@@ -1,3 +1,4 @@
+/* Falling edge detector used to detect when a push button is released */
 
 module falling_edge_detector
 (
@@ -15,13 +16,15 @@ module falling_edge_detector
 		.in_sync(in_sync)
 	);
 	
-	reg prev; // state
+	// state
+	reg prev; 
 	
-	
+	// flip-flop and next-state logic
 	always @(posedge clk)
-		prev <= in_sync;		// flip-flop and next-state logic
-		
-	assign out = (prev && !in_sync);	// output logic
+		prev <= in_sync;		
+	
+	// output logic
+	assign out = (prev && !in_sync);	
 	
 	
 endmodule

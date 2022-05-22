@@ -1,3 +1,4 @@
+/* Toggles between the display modes on rising edge of trigger */
 
 module mode_toggler
 (

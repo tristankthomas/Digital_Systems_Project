@@ -1,3 +1,5 @@
+/* Used to detect a rising edge after the push buttons have been
+   held in long enough */
 
 module rising_edge_detector
 (
@@ -8,6 +10,7 @@ module rising_edge_detector
 
 	wire in_sync;
 	
+	// synchroniser instansiation
 	synchroniser sync
 	(
 		.clk(clk),
@@ -15,13 +18,15 @@ module rising_edge_detector
 		.in_sync(in_sync)
 	);
 	
-	reg prev; // state
+	// state
+	reg prev; 
 	
-	
+	// flip-flop and next-state logic
 	always @(posedge clk)
-		prev <= in_sync;		// flip-flop and next-state logic
-		
-	assign out = (!prev && in_sync);	// output logic
+		prev <= in_sync;		
+	
+	// output logic
+	assign out = (!prev && in_sync);	
 	
 	
 endmodule

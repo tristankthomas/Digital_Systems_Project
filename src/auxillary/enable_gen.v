@@ -1,3 +1,6 @@
+/* Used to slow down the clock in order to view the instruction
+	pointer (for debugging purposes) */
+
 module enable_gen
 #(
 	parameter ENABLE_CNT = 20_000_000
@@ -11,7 +14,6 @@ module enable_gen
 	reg [size:0] count = ENABLE_CNT;
 	
 	// next_state logic
-	
 	always @(posedge clk or negedge resetn) begin
 		if (!resetn)
 			count <= ENABLE_CNT;
@@ -25,7 +27,6 @@ module enable_gen
 	end
 	
 	// output logic
-	
 	assign enable_out = mode ? 1'b1 : count == 0;
 	
 endmodule

@@ -1,3 +1,4 @@
+/* Detects when a push button is held in for a certain amount of time */
 
 module long_press_detect
 #(
@@ -15,6 +16,7 @@ module long_press_detect
 	wire done;
 	wire reset;
 	
+	// synchroniser instantiation
 	synchroniser sync
 	(
 		.clk(clk),
@@ -22,7 +24,8 @@ module long_press_detect
 		.in_sync(in_sync)
 	);
 	
-	count_up
+	// counter instantiation
+	counter
 	#(
 		.TIMER_PERIOD_ns(PRESS_TIMER_ns),
 		.CLK_PERIOD_ns(CLK_PERIOD_ns)
@@ -36,55 +39,19 @@ module long_press_detect
 		.done(done)
 	);
 		
+	// state
+	reg prev; 
 	
-	reg prev; // state
-	
-	
+	// flip-flop and next-state logic
 	always @(posedge clk)
-		prev <= in_sync;		// flip-flop and next-state logic
+		prev <= in_sync;		
 		
-		
-	assign out = done;	// output logic
+	// output logic
+	assign out = done;	
 	assign reset = !in_sync;
 	
 endmodule
 
-module count_up
-#(
-	parameter TIMER_PERIOD_ns = 100,
-	parameter CLK_PERIOD_ns = 20
-)
-(
-	input clk,
-	input reset_sync,
-	input resetn,
-	input enable,
-	output done
-);
 
-	localparam MAX_COUNT = TIMER_PERIOD_ns/CLK_PERIOD_ns;
-	localparam COUNTER_BITS = $clog2(MAX_COUNT);
-	reg [COUNTER_BITS:0] count = MAX_COUNT;
-
-	
-	// flip flop
-	always @(posedge clk) begin
-		if (!resetn)
-			count <= MAX_COUNT;
-		else begin
-			if (reset_sync)
-				count <= MAX_COUNT;
-			else begin
-				if (enable)
-					count <= (count == 0) ? 0 : count - 1;
-				else
-					count <= MAX_COUNT;
-			end
-		end
-	end
-
-	assign done = (count == 0) ? 1 : 0;
-	
-endmodule
 		
 

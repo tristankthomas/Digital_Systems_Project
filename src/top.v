@@ -1,3 +1,5 @@
+/* Top level module that sets up 7 segment displays and contains the SoC */
+
 `default_nettype none
 `include "top_level_definitions.vh"
 module top 
@@ -21,6 +23,7 @@ module top
     output wire [6:0] HEX4,
     output wire [6:0] HEX5 
  );
+ 
 	 // outputs from soc that are displayed on HEX
 	 wire [7:0] dout;
 	 wire dval;
@@ -37,10 +40,10 @@ module top
 		.gpi(~KEY[3:0]), 
 		.gpo(LEDR[5:0]), 
 		.din(SW[7:0]), 
-		.dout(dout),	// output
-		.dval(dval),	// output
+		.dout(dout),
+		.dval(dval),
 		.debug(LEDR[9:6]), 
-		.ip(ip)	// output
+		.ip(ip)
 	);
 		
 	// Instantiate display modules

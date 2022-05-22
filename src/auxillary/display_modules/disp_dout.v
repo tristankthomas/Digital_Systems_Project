@@ -1,5 +1,5 @@
-// Displays an 8-bit 2's complent number of four 7-segment displays
-
+/* Displays an 8-bit 2's complent number (DOUT) on four 7-segment displays 
+  in either binary or decimal (depending on mode) */
 
 module disp_dout
 (
@@ -8,7 +8,10 @@ module disp_dout
 	input enable,
 	output [6:0] disp0, disp1, disp2, disp3
 ); 
+
+	// binary display outputs
 	wire [7:0] bin_disp0, bin_disp1, bin_disp2, bin_disp3;
+	// decimal display outputs
 	wire [7:0] dec_disp0, dec_disp1, dec_disp2, dec_disp3;
 	
 	assign disp0 = mode ? bin_disp0 : dec_disp0;
@@ -16,7 +19,7 @@ module disp_dout
 	assign disp2 = mode ? bin_disp2 : dec_disp2;
 	assign disp3 = mode ? bin_disp3 : dec_disp3;
 	
-	// if mode is 1
+	// if mode is 1 (binary displaying)
 	binary_to_sseg bit_1_2
 	(
 		.x(x[1:0]),
@@ -45,13 +48,13 @@ module disp_dout
 		.segs(bin_disp3)
 	);
 	
+	// if mode is 0 (decimal displaying)
 	wire neg = (x < 0);
-	wire [7:0] ux = neg ? -x : x;  // unsigned x
+	wire [7:0] ux = neg ? -x : x;
 	
 	wire [7:0] xo0, xo1, xo2, xo3;
 	wire eno0, eno1, eno2, eno3;
 	
-	// if mode is 0
 	snum_to_sseg digit1
 	(
 		.x(ux), 

@@ -1,5 +1,5 @@
-// Displays an 8-bit number (instruciton pointer) in hexadecimal 
-// on two 7-segment displays
+/* Displays an 8-bit number (instruction pointer) in hexadecimal 
+   on two 7-segment displays */
 
 module disp_hex
 (

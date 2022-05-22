@@ -1,11 +1,14 @@
-// Display a Hexadecimal Digit, a Negative Sign, or a Blank, on a 7-segment Display
+// Displays a hexadecimal digit, a negative sign, or a blank, on a 7-segment Display
 `default_nettype none
-module SSeg(
+
+module SSeg
+(
 	input wire [3:0] bin, 
 	input wire neg, 
 	input wire enable,
 	input wire turbo_mode,
-	output reg [6:0] segs );
+	output reg [6:0] segs 
+);
 	
 	always @(*)
 		if (enable) begin
