@@ -47,7 +47,7 @@ module controller
 				endcase
 			end
 			
-			`STD_ACC : begin		// Accumulate
+			`ACC_ART : begin		// Accumulate
 				write_enable = 1'b1; // needs to be able to write the result from the ALU into the second argument (register)
 				branch_select = 1'b0;
 				is_atc = 1'b0;
@@ -56,20 +56,22 @@ module controller
 					`SAD : alu_op = `ALU_SAD;
 					`UMT : alu_op = `ALU_UMT;
 					`SMT : alu_op = `ALU_SMT;
-					`AND : alu_op = `ALU_AND;
-					`OR  : alu_op = `ALU_OR;
-					`XOR : alu_op = `ALU_XOR;
+					`USB : alu_op = `ALU_USB;
+					`SSB : alu_op = `ALU_SSB;
+					`UDV : alu_op = `ALU_UDV;
+					`SDV : alu_op = `ALU_SDV;
 					default : alu_op = `ALU_PUR;
 				endcase
 			end
 			
-			`MOR_ACC : begin
+			`ACC_LOG : begin
 				write_enable = 1'b1;
 				branch_select = 1'b0;
 				is_atc = 1'b0;
 				case (command)
-					`SDV : alu_op = `ALU_SDV;
-					`SSB : alu_op = `ALU_SSB;
+					`AND : alu_op = `ALU_AND;
+					`OR  : alu_op = `ALU_OR;
+					`XOR : alu_op = `ALU_XOR;
 					default : alu_op = `ALU_PUR;
 				endcase
 			end
