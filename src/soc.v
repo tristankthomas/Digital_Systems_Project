@@ -1,5 +1,8 @@
 `default_nettype none
-
+`define LONG_PRESS_TIMER 600_000_000 //ns
+`define DEBOUND_TIMER 	 30_000_000		//ns
+`define CLK_PERIOD 		 20				//ns
+`define ENABLE_CNT		 20_000_000    //ns
 
 module soc 
 (
@@ -20,37 +23,45 @@ module soc
 	output wire [3:0] debug,		// connected to left 4 leds
 	output wire [7:0] ip				// output from soc (displayed on left 2 displays in hex)
 );
+	assign debug = gpi_long;
 	
-	wire long_press;
-	wire disp_mode;
-	// detecting long press of pb1
-	
-	long_press_detect
-	#(
-		.CLK_PERIOD_ns(20),
-		.PRESS_TIMER_ns(2_000_000_000)
-	)
-	pb_long
-	(
-		.clk(clk),
-		.in(gpi[3]),
-		.out(long_press)
-	);
-	wire long_press_edge;
-	
-	rising_edge_detector long_edge
-	(
-		.clk(clk),
-		.in(long_press),
-		.out(long_press_edge)
-	);
+	wire [3:0]gpi_long;
+	wire [3:0]gpi_long_edge;
+
+	// detecting long press of pbs
+		generate
+		genvar i;
+		for (i = 0; i < 4; i = i + 1)
+			begin :pb_long
+				long_press_detect
+				#(
+					.CLK_PERIOD_ns(20),
+					.PRESS_TIMER_ns(`LONG_PRESS_TIMER)
+				)
+				pbl0
+				(
+					.clk(clk),
+					.in(gpi[i]),
+					.resetn(resetn_deb),
+					.out(gpi_long[i])
+				);
+				
+				rising_edge_detector pble0
+				(
+					.clk(clk),
+					.in(gpi_long[i]),
+					.out(gpi_long_edge[i])
+				);
+			end
+	endgenerate
 	
 	assign mode = disp_mode;
 	
+	wire disp_mode;
 	
 	mode_toggler mode_insta
 	(
-		.trigger(long_press_edge),
+		.trigger(gpi_long_edge[3]),
 		.mode_num(disp_mode)
 	);
 	
@@ -60,14 +71,14 @@ module soc
 	wire [3:0] gpi_edge;
 	
 	generate
-		genvar i;
-		for (i = 0; i < 4; i = i + 1)
+		genvar j;
+		for (j = 0; j < 4; j = j + 1)
 			begin :pb_edge
 				falling_edge_detector pb0
 				(
 					.clk(clk),
-					.in(gpi[i]),
-					.out(gpi_edge[i])
+					.in(gpi[j]),
+					.out(gpi_edge[j])
 				);
 			end
 	endgenerate
@@ -77,21 +88,21 @@ module soc
 	wire [7:0] din_sync;
 	
 	generate
-		genvar j;
-		for (j = 0; j < 8; j = j + 1)
+		genvar k;
+		for (k = 0; k < 8; k = k + 1)
 			begin :sw
 			debounce
 			#(
-				.CLK_PERIOD_ns(20),
-				.DEBOUNCE_TIMER_ns(30_000_000)
+				.CLK_PERIOD_ns(`CLK_PERIOD),
+				.DEBOUNCE_TIMER_ns(`DEBOUNCE_TIMER)
 			)
 			sw0
 			(
 				.clk(clk),
 				.enable(1'd1),
 				.resetn(resetn_deb),
-				.sig_i(din[j]),
-				.sig_o(din_sync[j])
+				.sig_i(din[k]),
+				.sig_o(din_sync[k])
 			);
 			end
 	endgenerate
@@ -102,8 +113,8 @@ module soc
 	debounce
 	#(
 
-		.CLK_PERIOD_ns(20),
-		.DEBOUNCE_TIMER_ns(30_000_000)
+		.CLK_PERIOD_ns(`CLK_PERIOD),
+		.DEBOUNCE_TIMER_ns(`DEBOUNCE_TIMER)
 	)
 	deb_res
 	(
@@ -120,8 +131,8 @@ module soc
 	debounce
 	#(
 
-		.CLK_PERIOD_ns(20),
-		.DEBOUNCE_TIMER_ns(30_000_000)
+		.CLK_PERIOD_ns(`CLK_PERIOD),
+		.DEBOUNCE_TIMER_ns(`DEBOUNCE_TIMER)
 	)
 	deb_tur 
 	(
@@ -138,7 +149,7 @@ module soc
 	
 	enable_gen		// converts the turbo switch to enable
 	#(
-		.ENABLE_CNT(20_000_000)		// higher means slower displaying speed
+		.ENABLE_CNT(`ENABLE_CNT)		// higher means slower displaying speed
 	)
 	enb
 	(
@@ -170,7 +181,8 @@ module soc
 		.clk(clk),
 		.enable(enable_out),
 		.resetn(resetn_deb),
-		.long_press(long_press),
+		.long_press(gpi_long),
+		.long_edge(gpi_long_edge),
 		// Instructions
 		.instruction(instruction),
 		.instruction_pointer(ip),

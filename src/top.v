@@ -39,7 +39,7 @@ module top
 		.din(SW[7:0]), 
 		.dout(dout),	// output
 		.dval(dval),	// output
-		.debug(LEDR[8:6]), 
+		.debug(LEDR[9:6]), 
 		.ip(ip)	// output
 	);
 		
@@ -62,6 +62,5 @@ module top
 		.disp0(HEX4), 
 		.disp1(HEX5)
 	);
-	assign LEDR[9] = disp_mode;
 	
 endmodule 

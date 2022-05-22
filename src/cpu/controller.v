@@ -6,7 +6,7 @@ module controller
 	input wire [2:0] command_group,
 	input wire [2:0] command,
 	output reg write_enable,
-	output reg [3:0] alu_op,		// only useful once the specific command is added in particular for conditional jumps
+	output reg [4:0] alu_op,		// only useful once the specific command is added in particular for conditional jumps
 	output reg branch_select,		// doesnt mean jump will occur only signifies that jump will occur if condition is true (from alu) (branch refers to instruction pointer (three branches))
 	output reg is_atc
 );
@@ -43,10 +43,11 @@ module controller
 					`SLT : alu_op = `ALU_SLT;
 					`ULE : alu_op = `ALU_ULE;
 					`SLE : alu_op = `ALU_SLE;
+					default : alu_op = `ALU_PUR;
 				endcase
 			end
 			
-			`ACC : begin		// Accumulate
+			`STD_ACC : begin		// Accumulate
 				write_enable = 1'b1; // needs to be able to write the result from the ALU into the second argument (register)
 				branch_select = 1'b0;
 				is_atc = 1'b0;
@@ -58,6 +59,17 @@ module controller
 					`AND : alu_op = `ALU_AND;
 					`OR  : alu_op = `ALU_OR;
 					`XOR : alu_op = `ALU_XOR;
+					default : alu_op = `ALU_PUR;
+				endcase
+			end
+			
+			`MOR_ACC : begin
+				write_enable = 1'b1;
+				branch_select = 1'b0;
+				is_atc = 1'b0;
+				case (command)
+					`SDV : alu_op = `ALU_SDV;
+					`SSB : alu_op = `ALU_SSB;
 					default : alu_op = `ALU_PUR;
 				endcase
 			end

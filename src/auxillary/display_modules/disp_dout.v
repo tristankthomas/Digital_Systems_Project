@@ -6,29 +6,20 @@ module disp_dout
 	input signed [7:0] x,
 	input mode,
 	input enable,
-	output reg [6:0] disp0, disp1, disp2, disp3
+	output [6:0] disp0, disp1, disp2, disp3
 ); 
 	wire [7:0] bin_disp0, bin_disp1, bin_disp2, bin_disp3;
 	wire [7:0] dec_disp0, dec_disp1, dec_disp2, dec_disp3;
 	
-	always @(*)
-		if (mode) begin
-			disp0 = bin_disp0;
-			disp1 = bin_disp1;
-			disp2 = bin_disp2;
-			disp3 = bin_disp3;
-		end else if (!mode) begin
-			disp0 = dec_disp0;
-			disp1 = dec_disp1;
-			disp2 = dec_disp2;
-			disp3 = dec_disp3;
-		end
+	assign disp0 = mode ? bin_disp0 : dec_disp0;
+	assign disp1 = mode ? bin_disp1 : dec_disp1;
+	assign disp2 = mode ? bin_disp2 : dec_disp2;
+	assign disp3 = mode ? bin_disp3 : dec_disp3;
 	
 	// if mode is 1
 	binary_to_sseg bit_1_2
 	(
 		.x(x[1:0]),
-		.mode(mode),
 		.enable(enable),
 		.segs(bin_disp0)
 	);
@@ -36,7 +27,6 @@ module disp_dout
 	binary_to_sseg bit_3_4
 	(
 		.x(x[3:2]),
-		.mode(mode),
 		.enable(enable),
 		.segs(bin_disp1)
 	);
@@ -44,7 +34,6 @@ module disp_dout
 	binary_to_sseg bit_5_6
 	(
 		.x(x[5:4]),
-		.mode(mode),
 		.enable(enable),
 		.segs(bin_disp2)
 	);
@@ -52,7 +41,6 @@ module disp_dout
 	binary_to_sseg bit_7_8
 	(
 		.x(x[7:6]),
-		.mode(mode),
 		.enable(enable),
 		.segs(bin_disp3)
 	);
@@ -69,7 +57,6 @@ module disp_dout
 		.x(ux), 
 		.neg(neg), 
 		.enable(enable),
-		.mode(mode),
 		.xo(xo0), 
 		.eno(eno0), 
 		.segs(dec_disp0)
@@ -80,7 +67,6 @@ module disp_dout
 		.x(xo0), 
 		.neg(neg), 
 		.enable(eno0),
-		.mode(mode),
 		.xo(xo1), 
 		.eno(eno1), 
 		.segs(dec_disp1)
@@ -90,7 +76,6 @@ module disp_dout
 		.x(xo1), 
 		.neg(neg), 
 		.enable(eno1),
-		.mode(mode),
 		.xo(xo2), 
 		.eno(eno2), 
 		.segs(dec_disp2)
@@ -100,7 +85,6 @@ module disp_dout
 		.x(xo2), 
 		.neg(neg), 
 		.enable(eno2),
-		.mode(mode),
 		.xo(xo3), 
 		.eno(eno3), 
 		.segs(dec_disp3)

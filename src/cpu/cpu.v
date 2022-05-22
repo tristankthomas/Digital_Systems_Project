@@ -7,7 +7,8 @@ module cpu
 	input wire clk,
 	input wire enable,
 	input wire resetn,
-	input wire long_press,
+	input wire [3:0]long_press,
+	input wire [3:0]long_edge,
 	// Instructions
 	input wire [31:0] instruction,
 	output reg [7:0] instruction_pointer,
@@ -31,7 +32,7 @@ module cpu
 	wire [7:0] address;
 	
 	wire branch_select;
-	wire [3:0] alu_op;
+	wire [4:0] alu_op;
 	wire is_atc;
 	wire write_enable;
 	wire [7:0] flag_inputs;
@@ -64,7 +65,7 @@ module cpu
 
 			 
 	// register file
-	assign flag_inputs = {2'd0, shift_overflow, arithmetic_overflow, gpi};
+	assign flag_inputs = {long_edge[1:0], shift_overflow, arithmetic_overflow, gpi};
 	
 	register_file
 	reg_ista

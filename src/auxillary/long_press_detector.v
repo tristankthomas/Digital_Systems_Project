@@ -6,7 +6,7 @@ module long_press_detect
 	
 )
 (
-	input wire clk, in,
+	input wire clk, in, resetn,
 	output wire out
 	
 );
@@ -30,7 +30,8 @@ module long_press_detect
 	count_insta
 	(
 		.clk(clk),
-		.resetn(reset),
+		.reset_sync(reset),
+		.resetn(resetn),
 		.enable(1),
 		.done(done)
 	);
@@ -55,6 +56,7 @@ module count_up
 )
 (
 	input clk,
+	input reset_sync,
 	input resetn,
 	input enable,
 	output done
@@ -67,17 +69,20 @@ module count_up
 	
 	// flip flop
 	always @(posedge clk) begin
-		if (resetn)
+		if (!resetn)
 			count <= MAX_COUNT;
 		else begin
-			if (enable)
-				count <= (count == 0) ? 0 : count - 1;
-			else
+			if (reset_sync)
 				count <= MAX_COUNT;
+			else begin
+				if (enable)
+					count <= (count == 0) ? 0 : count - 1;
+				else
+					count <= MAX_COUNT;
+			end
 		end
 	end
-	
-	
+
 	assign done = (count == 0) ? 1 : 0;
 	
 endmodule

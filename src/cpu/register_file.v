@@ -6,7 +6,7 @@ module register_file
 	input wire clk,
 	input wire enable,
 	input wire resetn,
-	input wire long_press,
+	input wire [3:0] long_press,
 	
 	// Port a (read only)
 	input wire [4:0] a_addr,
@@ -57,15 +57,17 @@ module register_file
 				reg_arr[`FLAG][atc_bit] <= 1'b0;
 			
 			// Set FLAG bits. This must be after any register write to not miss a flag
-			for (i = 0; i < 7; i = i + 1)
-				if (flag_inputs[i] && !long_press)
+			for (i = 0; i < 8; i = i + 1)
+				if (flag_inputs[i] && !long_press || (i == 6 && flag_inputs[i]) || 
+						(i == 7 && flag_inputs[i]) || (i == 4 && flag_inputs[i]))
 					reg_arr[`FLAG][i] <= 1'b1;
 			// Always want the dinput register to be written by dinput
 			reg_arr[`DINP] <= reg_din;
 					
 		end else begin
-			for (i = 0; i < 7; i = i + 1)
-				if (flag_inputs[i] && !long_press)
+			for (i = 0; i < 8; i = i + 1)
+				if (flag_inputs[i] && !long_press || (i == 6 && flag_inputs[i]) || 
+						(i == 7 && flag_inputs[i]) || (i == 4 && flag_inputs[i]))
 					reg_arr[`FLAG][i] <= 1'b1;
 			// Always want the dinput register to be written by dinput
 			reg_arr[`DINP] <= reg_din;

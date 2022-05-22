@@ -1,9 +1,10 @@
 // Command Groups
-`define NOP 3'b000 // No Operation
-`define JMP 3'b001 // Jump
-`define ATC 3'b010 // Atomic Test and Clear
-`define MOV 3'b011 // Move
-`define ACC 3'b100 // Accumulate
+`define NOP 	 3'b000 // No Operation
+`define JMP 	 3'b001 // Jump
+`define ATC 	 3'b010 // Atomic Test and Clear
+`define MOV	 	 3'b011 // Move
+`define STD_ACC 3'b100 // Standard Accumulate
+`define MOR_ACC 3'b101 // More Accumulate
 
 // Move Commands
 `define PUR 3'b000 // Pure Move
@@ -18,7 +19,7 @@
 `define ULE 3'b110 // Jump on Unsigned Less Than or Equal To
 `define SLE 3'b111 // Jump on Signed Less Than or Equal To
 
-// Accumulate Commands
+// Standard Accumulate Commands
 `define UAD 3'b000 // Unsigned Addition
 `define SAD 3'b001 // Signed Addition
 `define UMT 3'b010 // Unsiged Multiplication
@@ -27,25 +28,32 @@
 `define OR  3'b101 // Bitwise OR
 `define XOR 3'b110 // Bitwise XOR
 
+// Additional Accumulate Commands
+`define SDV 3'b000 // Signed Division (floor)
+`define SSB 3'b001 // Signed Subtraction
+
 // ALU Op Code Constants
-`define ALU_PUR 4'd0 // No Logic or Arithmetic Operation
-`define ALU_SHL 4'd1 // Left Shift
-`define ALU_SHR 4'd2 // Right Shift
+`define ALU_PUR 5'd0 // No Logic or Arithmetic Operation
+`define ALU_SHL 5'd1 // Left Shift
+`define ALU_SHR 5'd2 // Right Shift
 
-`define ALU_UAD 4'd3 // Unsigned Addition
-`define ALU_SAD 4'd4 // Signed Addition
-`define ALU_UMT 4'd5 // Unsigned Multiplication
-`define ALU_SMT 4'd6 // Signed Multiplication
-`define ALU_AND 4'd7 // Bitwise AND
-`define ALU_OR  4'd8 // Bitwise OR
-`define ALU_XOR 4'd9 // Bitwise XOR
+`define ALU_UAD 5'd3 // Unsigned Addition
+`define ALU_SAD 5'd4 // Signed Addition
+`define ALU_UMT 5'd5 // Unsigned Multiplication
+`define ALU_SMT 5'd6 // Signed Multiplication
+`define ALU_AND 5'd7 // Bitwise AND
+`define ALU_OR  5'd8 // Bitwise OR
+`define ALU_XOR 5'd9 // Bitwise XOR
 
-`define ALU_UNC 4'd10 // Always True
-`define ALU_EQ  4'd11 // Equality
-`define ALU_ULT 4'd12 // Unsigned Less Than
-`define ALU_SLT 4'd13 // Signed Less Than
-`define ALU_ULE 4'd14 // Unsigned Less Than or Equal To
-`define ALU_SLE 4'd15 // Signed Less Than or Equal To
+`define ALU_UNC 5'd10 // Always True
+`define ALU_EQ  5'd11 // Equality
+`define ALU_ULT 5'd12 // Unsigned Less Than
+`define ALU_SLT 5'd13 // Signed Less Than
+`define ALU_ULE 5'd14 // Unsigned Less Than or Equal To
+`define ALU_SLE 5'd15 // Signed Less Than or Equal To
+
+`define ALU_SDV 5'd16 // Signed Division
+`define ALU_SSB 5'd17 // Signed Subtraction
 
 // Argument Types
 `define NUM 1'b0 // Number Type
@@ -72,7 +80,8 @@
 
 `define OFLW 3'd4
 `define SHFT 3'd5
-
+`define DIV  3'd6
+`define SUB  3'd7
 
 // Other Useful Definitions
 // Zeros
